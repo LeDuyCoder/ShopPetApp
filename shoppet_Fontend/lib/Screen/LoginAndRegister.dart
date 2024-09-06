@@ -7,9 +7,9 @@ class Login_Register extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        fit: StackFit.expand, // phủ toàn bộ ảnh
+        fit: StackFit.expand, // fill all image
         children: [
-          //ảnh nền
+          //background image
           const Image(
             image: AssetImage("assets/Screen_Login_or_Register.png"),
             fit: BoxFit.cover,
@@ -18,7 +18,7 @@ class Login_Register extends StatelessWidget {
             height: 10,
           ),
 
-          /// chỗ này dùng để thiết kế logo và chữ
+          //here design logo
           const Column(
             children: [
               SizedBox(height: 60),
@@ -45,16 +45,16 @@ class Login_Register extends StatelessWidget {
             height: 10,
           ),
           // ảnh
-          Column(
+          const Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Image(
+              Image(
                 image: AssetImage("assets/undraw_good_doggy_re_eet7.png"),
               ),
             ],
           ),
           //login and register
-          SizedBox(
+          const SizedBox(
             height: 30,
           ),
           Align(
@@ -69,10 +69,10 @@ class Login_Register extends StatelessWidget {
                     onPressed: () {},
                     child: const Text("REGISTER"),
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.orange),
-                      minimumSize: MaterialStateProperty.all(
+                      backgroundColor: WidgetStateProperty.all(Colors.orange),
+                      minimumSize: WidgetStateProperty.all(
                           Size(300, 50)), // Kích thước hình chữ nhật
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -86,9 +86,9 @@ class Login_Register extends StatelessWidget {
                     onPressed: () {},
                     child: const Text("LOGIN"),
                     style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all(
+                      minimumSize: WidgetStateProperty.all(
                           Size(300, 50)), // Kích thước hình chữ nhật
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
