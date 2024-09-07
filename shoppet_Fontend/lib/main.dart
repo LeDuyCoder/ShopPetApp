@@ -24,6 +24,7 @@ import 'package:shoppet_fontend/Model/apiModel/userModel.dart';
 import 'package:shoppet_fontend/Model/apiModel/voucherModel.dart';
 import 'package:shoppet_fontend/Model/apiModel/voucherUseModel.dart';
 import 'package:shoppet_fontend/Screen/LoginAndRegister.dart';
+import 'package:shoppet_fontend/Screen/LoginScreen.dart';
 import 'package:shoppet_fontend/Screen/SlashSceen.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/v4.dart';
@@ -47,6 +48,6 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const Login_Register());
+        home: const LoginLayout());
   }
 }

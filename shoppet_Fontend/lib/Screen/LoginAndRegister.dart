@@ -7,9 +7,9 @@ class Login_Register extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        fit: StackFit.expand, // phủ toàn bộ ảnh
+        fit: StackFit.expand, // full image screen
         children: [
-          //ảnh nền
+          //background
           const Image(
             image: AssetImage("assets/Screen_Login_or_Register.png"),
             fit: BoxFit.cover,
@@ -18,7 +18,7 @@ class Login_Register extends StatelessWidget {
             height: 10,
           ),
 
-          /// chỗ này dùng để thiết kế logo và chữ
+          /// logo and text
           const Column(
             children: [
               SizedBox(height: 60),
@@ -32,11 +32,16 @@ class Login_Register extends StatelessWidget {
                     width: 100,
                   ),
                   Padding(padding: EdgeInsets.all(10)),
-                  Image(
-                    image: AssetImage("assets/Wellcome_Back.png"),
-                    width: 200,
-                    height: 200,
+                  SizedBox(
+                    height: 20,
                   ),
+                  Text(
+                    ' Welcome',
+                    style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange),
+                  )
                 ],
               ),
             ],
@@ -58,10 +63,9 @@ class Login_Register extends StatelessWidget {
             height: 30,
           ),
           Align(
-            alignment: Alignment.bottomCenter, // Đặt cột ở phía dưới cùng
+            alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.only(
-                  bottom: 100), // Điều chỉnh khoảng cách từ dưới lên
+              padding: const EdgeInsets.only(bottom: 100),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
