@@ -7,15 +7,9 @@ class Login_Register extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-<<<<<<< HEAD
-        fit: StackFit.expand, // full image screen
-        children: [
-          //background
-=======
         fit: StackFit.expand, // fill all image
         children: [
           //background image
->>>>>>> 1e27e6cd62ebee24678170e52f0d9f95d36ef787
           const Image(
             image: AssetImage("assets/Screen_Login_or_Register.png"),
             fit: BoxFit.cover,
@@ -24,11 +18,7 @@ class Login_Register extends StatelessWidget {
             height: 10,
           ),
 
-<<<<<<< HEAD
-          /// logo and text
-=======
           //here design logo
->>>>>>> 1e27e6cd62ebee24678170e52f0d9f95d36ef787
           const Column(
             children: [
               SizedBox(height: 60),
