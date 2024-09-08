@@ -8,17 +8,28 @@ class Slashsceen extends StatefulWidget {
   State<Slashsceen> createState() => _SlashsceenState();
 }
 
-class _SlashsceenState extends State<Slashsceen> {
+class _SlashsceenState extends State<Slashsceen> with SingleTickerProviderStateMixin {
+  late Animation<double> animation;
+  late AnimationController controller;
+
   @override
   void initState() {
     super.initState();
 
+    controller =
+        AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    animation = Tween<double>(begin: -100, end: 20).animate(controller)
+      ..addListener(() {
+        setState(() {
+          // The state that has changed here is the animation object's value.
+        });
+      });
+    controller.forward();
+
     // Sử dụng Future.delayed để chờ 3 giây và chuyển sang màn hình Login_Register
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 10), () {
       // Chuyển sang màn hình Login_Register sau 3 giây
       Navigator.pushReplacement(
-        ///Navigator là lớp quản lý các hoạt động điều hướng (navigation) giữa các màn hình trong Flutter.
-        ///pushReplacement: Hàm này thay thế màn hình hiện tại bằng màn hình mới và xóa màn hình hiện tại
         context,
         MaterialPageRoute(builder: (context) => const Login_Register()),
       );
@@ -38,23 +49,34 @@ class _SlashsceenState extends State<Slashsceen> {
                   fit: BoxFit.cover),
             ),
             //tạo logo và chữ
-            child: const Center(
+            child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image(
-                    image: AssetImage("assets/logoShopPet_1.png"),
-                    height: 150,
+                  AnimatedBuilder(
+                    animation: animation,
+                    builder: (context, child) {
+                      return Transform.translate(
+                        offset: Offset(0, animation.value), // Animation dịch chuyển hình ảnh
+                        child: child,
+                      );
+                    },
+                    child: Image.asset(
+                      "assets/logoShopPet_1.png",
+                      height: 150,
+                    ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Text(
+                  const Text(
                     'SHOP PET',
                     style: TextStyle(
-                        fontSize: 28,
+                        fontSize: 50,
                         fontWeight: FontWeight.bold,
-                        color: Colors.orange),
+                        color: Colors.orange,
+                        fontFamily: "JustAnotherHand"
+                    ),
                   )
                 ],
               ),
