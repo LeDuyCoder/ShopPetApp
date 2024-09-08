@@ -114,7 +114,7 @@ class _screenMain extends State<screenMain>{
                     ],
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: MediaQuery.sizeOf(context).width,
                   height: 100,
                   child: Align(
