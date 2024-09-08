@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:shoppet_fontend/Screen/LoginScreen.dart';
-import 'package:shoppet_fontend/Screen/mainScreen.dart';
+import 'package:shoppet_fontend/Screen/RegisterScreen.dart';
 
 import 'Screen/SlashSceen.dart';
 
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: screenMain());
+        home: Slashsceen());
   }
 
 
