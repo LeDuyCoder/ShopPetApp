@@ -5,8 +5,12 @@ import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:shoppet_fontend/Screen/LoginScreen.dart';
 import 'package:shoppet_fontend/Screen/RegisterScreen.dart';
+
+import 'Screen/SlashSceen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,13 +30,27 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: Registerscreen());
+        home: ThreadDeviceRegis());
   }
 
   Widget ThreadDevice() {
     if (!kIsWeb) {
       if (Platform.isAndroid) {
         return LoginScreen();
+      } else if (Platform.isIOS) {
+        return Container();
+      } else {
+        return Container();
+      }
+    } else {
+      return Container();
+    }
+  }
+
+  Widget ThreadDeviceRegis() {
+    if (!kIsWeb) {
+      if (Platform.isAndroid) {
+        return Registerscreen();
       } else if (Platform.isIOS) {
         return Container();
       } else {

@@ -38,6 +38,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   http: ^1.2.2
   uuid: ^4.5.0
+  get: ^4.6.6
+  flutter_native_splash: ^2.4.1
+
 
 dev_dependencies:
   flutter_test:
