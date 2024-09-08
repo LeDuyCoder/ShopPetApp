@@ -32,11 +32,16 @@ class Login_Register extends StatelessWidget {
                     width: 100,
                   ),
                   Padding(padding: EdgeInsets.all(10)),
-                  Image(
-                    image: AssetImage("assets/Wellcome_Back.png"),
-                    width: 200,
-                    height: 200,
+                  SizedBox(
+                    height: 20,
                   ),
+                  Text(
+                    ' Welcome',
+                    style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange),
+                  )
                 ],
               ),
             ],
@@ -58,10 +63,9 @@ class Login_Register extends StatelessWidget {
             height: 30,
           ),
           Align(
-            alignment: Alignment.bottomCenter, // Đặt cột ở phía dưới cùng
+            alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.only(
-                  bottom: 100), // Điều chỉnh khoảng cách từ dưới lên
+              padding: const EdgeInsets.only(bottom: 100),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
