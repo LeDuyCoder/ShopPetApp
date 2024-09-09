@@ -41,6 +41,7 @@ dependencies:
   get: ^4.6.6
   flutter_native_splash: ^2.4.1
   smooth_page_indicator: ^1.2.0+3
+  persistent_bottom_nav_bar: ^6.2.1
 
 
 dev_dependencies:
@@ -69,7 +70,7 @@ flutter:
   assets:
       - assets/
       - assets/Image/BannerADS/banner1.png
-      
+      - assets/Image/IconCategory/
   #   - images/a_dot_buassets/Splash_Screen.pngrr.jpeg
   #   - images/a_dot_ham.jpeg
 
@@ -104,6 +105,15 @@ flutter:
      - family: Jua
        fonts:
          - asset: assets/fonts/Jua-Regular.ttf
+     - family: Mina
+       fonts:
+         - asset: assets/fonts/Mina/Mina-Regular.ttf
+           weight: 100
+         - asset: assets/fonts/Mina/Mina-Bold.ttf
+           weight: 700
+     - family: Itim
+       fonts:
+        - asset: assets/fonts/Itim-Regular.ttf
 #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
