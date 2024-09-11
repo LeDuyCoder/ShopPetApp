@@ -56,7 +56,7 @@ class _SlashsceenState extends State<Slashsceen> with SingleTickerProviderStateM
             //tạo background
             decoration: const BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage("assets/Splash_Screen.png"),
+                  image: AssetImage("assets/Image/Splash_Screen.png"),
                   fit: BoxFit.cover),
             ),
             //tạo logo và chữ
@@ -73,7 +73,7 @@ class _SlashsceenState extends State<Slashsceen> with SingleTickerProviderStateM
                       );
                     },
                     child: Image.asset(
-                      "assets/logoShopPet_1.png",
+                      "assets/Image/logoShopPet_1.png",
                       height: 150,
                     ),
                   ),

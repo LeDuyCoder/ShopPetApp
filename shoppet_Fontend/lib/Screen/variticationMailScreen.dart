@@ -96,7 +96,7 @@ class _variticationMailScreen extends State<variticationMailScreen>{
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset("assets/ok.png", width: 180),
+                  Image.asset("assets/Image/ok.png", width: 180),
                 ],
               ),
             ),
@@ -139,7 +139,7 @@ class _variticationMailScreen extends State<variticationMailScreen>{
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: 60,),
-                Image.asset("assets/OTP.png", width: 200, height: 200,),
+                Image.asset("assets/Image/OTP.png", width: 200, height: 200,),
                 SizedBox(height: 50,),
                 const Text("Mail Verification", style: TextStyle(color: Colors.black, decoration: TextDecoration.none, fontFamily: "Itim", fontSize: 25),),
                 Column(

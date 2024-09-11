@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:shoppet_fontend/Screen/mainScreen.dart';
 
+import 'cartScreen.dart';
+import 'detailScreen.dart';
+
 class homeScreen extends StatefulWidget{
   @override
   State<StatefulWidget> createState() => _homeScreen();
@@ -15,7 +18,7 @@ class _homeScreen extends State<homeScreen>{
   List<Widget> _buildScreens() {
     return [
       screenMain(),
-      const Center(child: Text("Search")),
+      detailScreen(),
       const Center(child: Text("Profile")),
     ];
   }

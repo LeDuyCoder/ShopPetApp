@@ -1,8 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
+import 'package:shoppet_fontend/API/Server/productAPI.dart';
+import 'package:shoppet_fontend/Model/apiModel/productModel.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../Widget/startDisplay.dart';
@@ -19,9 +24,15 @@ class _screenMain extends State<screenMain>{
   late Timer _timer;
   int _currentPage = 0;
 
+
+  Future<List<Product>> getProducts() async {
+    productAPI productService = productAPI();
+    List<Product>? listProduct = await productService.getProducts();
+    return listProduct ?? [];
+  }
+
   @override
   void initState() {
-
     super.initState();
 
     _pageController = PageController(initialPage: 0);
@@ -42,8 +53,32 @@ class _screenMain extends State<screenMain>{
     });
   }
 
+  String formatCurrency(double amount) {
+    final formatter = NumberFormat('#,##0', 'en'); // Định dạng sử dụng dấu phẩy
+    return formatter.format(amount).replaceAll(',', '.'); // Thay dấu phẩy bằng dấu chấm
+  }
+
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder(future: getProducts(), builder: (context, dataProduct){
+      if(dataProduct.connectionState == ConnectionState.waiting){
+        return const Center(
+          child: CircularProgressIndicator(
+            color: Colors.orange,
+          ),
+        );
+      }
+
+      if(dataProduct.hasData){
+        return loadScreen(true, dataProduct.data!);
+      }else{
+        return loadScreen(false);
+      }
+
+    });
+  }
+
+  Widget loadScreen(bool hasData, [List<Product> listData = const []]){
     return Container(
       color: Colors.white,
       height: MediaQuery.sizeOf(context).height,
@@ -64,7 +99,7 @@ class _screenMain extends State<screenMain>{
                     ClipRRect(
                       borderRadius: BorderRadius.circular(360.0), // Đường kính của border (50/2)
                       child: Image.asset(
-                        "assets/logoShopPet_1.png",
+                        "assets/Image/logoShopPet_1.png",
                         width: 60,
                         height: 60,
                         fit: BoxFit.cover, // Để hình ảnh không bị biến dạng
@@ -356,24 +391,20 @@ class _screenMain extends State<screenMain>{
                 ),
 
                 Padding(padding: EdgeInsets.only(left: 5, right: 5),
-                  child: Container(
-                    height: 200,
-                    width: MediaQuery.sizeOf(context).width,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        Row(
-                          children: [
-                            viewProduct(),
-                            viewProduct(),
-                            viewProduct(),
-                            viewProduct(),
-                            viewProduct(),
-                          ],
-                        )
-                      ],
-                    ),
-                  )
+                    child: Container(
+                      height: 200,
+                      width: MediaQuery.sizeOf(context).width,
+                      child: listData.isEmpty ? Center(
+                        child: Image.asset("assets/Image/nodata.png"), // Hiển thị ảnh khi không có dữ liệu
+                      )
+                      : ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          for (Product item in listData)
+                            viewProduct(item.image, item.name, 4.5, formatCurrency(item.price)),
+                        ],
+                      ),
+                    )
                 )
               ],
             ),
@@ -383,7 +414,12 @@ class _screenMain extends State<screenMain>{
     );
   }
 
-  Widget viewProduct(){
+  Uint8List base64ToImage(String base64String) {
+    return const Base64Decoder().convert(base64String);
+  }
+
+
+  Widget viewProduct(String image, String name, double star, String price){
     return Padding(
         padding: const EdgeInsets.only(right: 5),
         child: SizedBox(
@@ -394,9 +430,15 @@ class _screenMain extends State<screenMain>{
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset("assets/product.png",),
-              const Text("Nhà Mèo Lông",
-                style: TextStyle(
+              SizedBox(
+                height: 80,
+                child: image == "none"?
+                const Center(child: Icon(Icons.image_not_supported_outlined, size: 50, color: Colors.grey,))
+                    : Center(child: Image.memory(base64ToImage(image)),)
+              ),
+              //Image.asset("assets/Image/noimage.png",),
+              Text(name,
+                style: const TextStyle(
                     decoration: TextDecoration.none,
                     color: Colors.black,
                     fontFamily: "Itim",
@@ -404,8 +446,8 @@ class _screenMain extends State<screenMain>{
                 ),
               ),
               StarDisplayApp(value: 4, size: 15,),
-              const Text("100.000 VNĐ",
-                style: TextStyle(
+              Text("$price VNĐ",
+                style: const TextStyle(
                     decoration: TextDecoration.none,
                     color: Colors.black,
                     fontFamily: "Itim",
