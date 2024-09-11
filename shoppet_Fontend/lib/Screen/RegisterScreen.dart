@@ -1,7 +1,15 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shoppet_fontend/API/Local/config.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shoppet_fontend/API/Server/userAPI.dart';
+import 'package:shoppet_fontend/Model/apiModel/userModel.dart';
+import 'package:shoppet_fontend/Screen/variticationMailScreen.dart';
 
 class Registerscreen extends StatefulWidget {
   const Registerscreen({super.key});
@@ -19,6 +27,9 @@ class _RegisterscreenState extends State<Registerscreen> {
   bool showPass = false;
   bool showconfirmpass = false;
   String _passwordError = "";
+  String _userError = "";
+  String _mailError = "";
+
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       // check password = confirmPass ?
@@ -28,18 +39,99 @@ class _RegisterscreenState extends State<Registerscreen> {
         });
       } else {
         userAPI userService = userAPI();
-        HTTPReult chesspass = await userService.checkpass(
-            username: _username.text, password: _password.text);
-        setState(() {
-          if (chesspass == HTTPReult.ok) {
-            _passwordError = "Success Register ";
-          } else {
-            _passwordError = "Fail Register";
+        String hasAccount = await userService.hasUser(username: _username.text);
+
+        if(hasAccount == "true"){
+          _userError = "Account exist";
+        }else{
+          List<User>? listUsers = await userService.getUserByMail(_mail.text);
+          print(listUsers?.length);
+          if(listUsers != null && listUsers.length < 2){
+            final random = Random();
+            int randomNumber = 100000 + random.nextInt(900000);
+            sendOtpEmail(_mail.text, "$randomNumber");
+            Navigator.push(context, MaterialPageRoute(builder: (context) => variticationMailScreen(
+                code: "$randomNumber",
+                sendMail: (String newCode){
+                  sendOtpEmail(_mail.text, newCode);
+                },
+                dataUser: {
+                  "username": _username.text,
+                  "password": _password.text,
+                  "mail": _mail.text
+                },
+             )));
+          }else{
+            _mailError = "mail has reached the maximum number used";
           }
-        });
+        }
+
+        setState(() {});
+
       }
     }
   }
+  
+
+  /// Kiểm tra chuỗi có phải là email hợp lệ hay không.
+   bool isValidEmail(String email) {
+    RegExp _emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    if (email.isEmpty) {
+      return false;
+    }
+    return _emailRegex.hasMatch(email);
+  }
+
+  void sendOtpEmail(String recipientEmail, String otpCode) async {
+    final smtpServer = gmail('duyga544@gmail.com', 'azlu pvzn wbnq paau');
+
+    final message = Message()
+      ..from = const Address('duyga544@gmail.com', 'Shop Pet')
+      ..recipients.add(recipientEmail)
+      ..subject = 'Your OTP Code'
+      ..text = 'Your OTP code is: $otpCode';
+
+    try {
+      final sendReport = await send(message, smtpServer);
+      print('Email sent: $sendReport');
+    } on MailerException catch (e) {
+      print('Email not sent. ${e.toString()}');
+    }
+  }
+
+  // Future<void> dialogOTP(){
+  //   return Dialogs.materialDialog(
+  //       title: "Vertiy Mail",
+  //       customView: Container(
+  //         child: Column(
+  //           children: [
+  //
+  //           ],
+  //         ),
+  //       ),
+  //       color: Colors.white,
+  //       context: context,
+  //       actions: [
+  //         IconsOutlineButton(
+  //           onPressed: () {},
+  //           text: 'Cancel',
+  //           iconData: Icons.cancel_outlined,
+  //           textStyle: TextStyle(color: Colors.grey),
+  //           iconColor: Colors.grey,
+  //         ),
+  //         IconsButton(
+  //           onPressed: () {},
+  //           text: 'Delete',
+  //           iconData: Icons.delete,
+  //           color: Colors.red,
+  //           textStyle: TextStyle(color: Colors.white),
+  //           iconColor: Colors.white,
+  //         ),
+  //       ]);
+  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -70,20 +162,20 @@ class _RegisterscreenState extends State<Registerscreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 30,
+                  height: 10,
                 ),
                 Container(
                   width: double.infinity,
-                  height: MediaQuery.sizeOf(context).height - 150,
+                  height: MediaQuery.sizeOf(context).height - 130,
                   decoration: const BoxDecoration(
                     color: Colors.white, // Màu nền của Container
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.only(
                       top: 50,
-                      left: 50,
-                      right: 50,
+                      left: 20,
+                      right: 20,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,9 +198,9 @@ class _RegisterscreenState extends State<Registerscreen> {
                                 controller: _username,
                                 style: const TextStyle(fontSize: 15),
                                 decoration: InputDecoration(
-                                  errorText: _passwordError == ""
+                                  errorText: _userError == ""
                                       ? null
-                                      : _passwordError,
+                                      : _userError,
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 10.0, horizontal: 12.0),
                                   enabledBorder: const OutlineInputBorder(
@@ -326,10 +418,11 @@ class _RegisterscreenState extends State<Registerscreen> {
                               TextFormField(
                                 controller: _mail,
                                 style: const TextStyle(fontSize: 15),
+                                keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
-                                  errorText: _passwordError == ""
+                                  errorText: _mailError == ""
                                       ? null
-                                      : _passwordError,
+                                      : _mailError,
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 10.0, horizontal: 12.0),
                                   enabledBorder: const OutlineInputBorder(
@@ -373,10 +466,10 @@ class _RegisterscreenState extends State<Registerscreen> {
                                   ),
                                 ),
                                 validator: (value) {
-                                  if (value!.isEmpty || value == "") {
+                                  if (value!.isEmpty || value == "" || !isValidEmail(value)) {
                                     return "valid value";
                                   }
-                                  ; // Bạn có thể thêm logic kiểm tra ở đây
+
                                 },
                               ),
                               const SizedBox(

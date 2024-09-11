@@ -31,4 +31,18 @@ class User {
       role: json['role'] as String,
     );
   }
+
+  // Chuyển đối tượng User thành JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'uuid': userId, // Đổi lại thành uuid để khớp với định dạng JSON
+      'username': username,
+      'password': password,
+      'mail': mail,
+      'name': name,
+      'phone': phone,
+      'create_at': createdAt, // Đổi lại thành create_at để khớp với định dạng JSON
+      'role': role,
+    };
+  }
 }

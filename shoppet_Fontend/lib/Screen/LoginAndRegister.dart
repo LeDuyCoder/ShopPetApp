@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shoppet_fontend/Screen/LoginScreen.dart';
 
+import 'RegisterScreen.dart';
+
 class Login_Register extends StatelessWidget {
   const Login_Register({super.key});
 
@@ -75,7 +77,10 @@ class Login_Register extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () async {
-
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => Registerscreen()),
+                        );
                       },
                       child: Container(
                         width: MediaQuery.sizeOf(context).width,

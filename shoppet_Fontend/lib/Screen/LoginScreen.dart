@@ -1,7 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shoppet_fontend/API/Local/config.dart';
 import 'package:shoppet_fontend/API/Server/userAPI.dart';
+import 'package:shoppet_fontend/Screen/homeScreen.dart';
+
+import '../Model/apiModel/userModel.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -12,19 +19,24 @@ class _LoginScreen extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _username = TextEditingController();
   final TextEditingController _password = TextEditingController();
+
   bool showPass = false;
   String _passwordError = "";
 
   Future<void> _submitForm() async {
+
+    final SharedPreferences storeData = await SharedPreferences.getInstance();
+
     if (_formKey.currentState?.validate() ?? false) {
       userAPI userService = userAPI();
       HTTPReult checkPass = await userService.checkpass(username: _username.text, password: _password.text);
-
+      User? dataUser = await userService.getUserByName(_username.text);
       setState(() {
         if (checkPass == HTTPReult.ok) {
-          _passwordError = "Đăng nhập thành công";
+          storeData.setString("dataUser", jsonEncode(dataUser?.toJson()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => homeScreen()));
         } else {
-          _passwordError = "mật khẩu không đúng 2";
+          _passwordError = "mật khẩu không đúng";
         }
       });
       // Optionally, you can clear the field after submission
