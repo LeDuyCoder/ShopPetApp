@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shoppet_fontend/Screen/LoginAndRegister.dart';
+import 'package:shoppet_fontend/Screen/homeScreen.dart';
 
 class Slashsceen extends StatefulWidget {
   const Slashsceen({super.key});
@@ -27,12 +29,21 @@ class _SlashsceenState extends State<Slashsceen> with SingleTickerProviderStateM
     controller.forward();
 
     // Sử dụng Future.delayed để chờ 3 giây và chuyển sang màn hình Login_Register
-    Future.delayed(const Duration(seconds: 10), () {
-      // Chuyển sang màn hình Login_Register sau 3 giây
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const Login_Register()),
-      );
+    Future.delayed(const Duration(seconds: 10), () async {
+
+      SharedPreferences storeData = await SharedPreferences.getInstance();
+      if(storeData.containsKey("dataUser")) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => homeScreen()),
+        );
+      }else {
+        // Chuyển sang màn hình Login_Register sau 3 giây
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Login_Register()),
+        );
+      }
     });
   }
 

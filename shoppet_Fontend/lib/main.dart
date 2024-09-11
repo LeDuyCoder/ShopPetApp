@@ -1,18 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:shoppet_fontend/Screen/LoginScreen.dart';
-import 'package:shoppet_fontend/Screen/RegisterScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shoppet_fontend/Screen/LoginAndRegister.dart';
+import 'package:shoppet_fontend/Screen/SlashSceen.dart';
 import 'package:shoppet_fontend/Screen/homeScreen.dart';
-import 'package:shoppet_fontend/Screen/mainScreen.dart';
-
-import 'Screen/SlashSceen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,26 +22,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: homeScreen());
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: ThreadDevice()
+    );
   }
 
-
   Widget ThreadDevice(){
-    if(!kIsWeb) {
+
+    if (!kIsWeb) {
       if (Platform.isAndroid) {
-        return LoginScreen();
+        return Slashsceen();
       } else if (Platform.isIOS) {
-        return Container();
-      }else{
-        return Container();
+        return const Center(child: Text("iOS not supported yet"));
+      } else {
+        return const Center(child: Text("Unsupported platform"));
       }
-    }else{
-      return Container();
+    } else {
+      return const Center(child: Text("Web not supported yet"));
     }
   }
 }
