@@ -1,15 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
 import 'package:shoppet_fontend/API/Server/productAPI.dart';
+import 'package:shoppet_fontend/API/Server/rateAPI.dart';
 import 'package:shoppet_fontend/Model/apiModel/productModel.dart';
+import 'package:shoppet_fontend/Screen/detailScreen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../Model/apiModel/rateModel.dart';
+import '../Model/apiModel/userModel.dart';
 import '../Widget/startDisplay.dart';
 
 class screenMain extends StatefulWidget{
@@ -23,11 +29,29 @@ class _screenMain extends State<screenMain>{
   late final PageController _pageController;
   late Timer _timer;
   int _currentPage = 0;
+  late final List<Rate>? ListRate;
+
+  List<dynamic> caluteRate(String productID){
+    int sumRate = 0;
+    int amount = 0;
+    ListRate!.forEach((rate){
+      if(productID == rate.productID){
+        sumRate += rate.rate;
+        amount++;
+      }
+    });
+
+
+    //print(double.parse((sumRate/amount).toStringAsFixed(1)));
+    return [amount == 0 ? 0.0: double.parse((sumRate/amount).toStringAsFixed(1)), amount];
+  }
 
 
   Future<List<Product>> getProducts() async {
     productAPI productService = productAPI();
+    rateAPI rateServiece = rateAPI();
     List<Product>? listProduct = await productService.getProducts();
+    ListRate = await rateServiece.getRates();
     return listProduct ?? [];
   }
 
@@ -69,8 +93,16 @@ class _screenMain extends State<screenMain>{
         );
       }
 
+      List<Product> listRandom = [];
+
+      Random random = Random();
+
+      for(int i = 0; i < 5; i++){
+        listRandom.add(dataProduct.data![random.nextInt(dataProduct.data!.length)]);
+      }
+
       if(dataProduct.hasData){
-        return loadScreen(true, dataProduct.data!);
+        return loadScreen(true, listRandom, dataProduct.data!);
       }else{
         return loadScreen(false);
       }
@@ -78,17 +110,17 @@ class _screenMain extends State<screenMain>{
     });
   }
 
-  Widget loadScreen(bool hasData, [List<Product> listData = const []]){
+  Widget loadScreen(bool hasData, [List<Product> listData = const [], List<Product> listDataAll = const []]){
     return Container(
       color: Colors.white,
       height: MediaQuery.sizeOf(context).height,
       width: MediaQuery.sizeOf(context).width,
-      child: ListView(
-        children: [
-          Container(
-            height: MediaQuery.sizeOf(context).height,
-            color: Colors.white,
-            child: Column(
+      child: Container(
+        height: MediaQuery.sizeOf(context).height,
+        color: Colors.white,
+        child: ListView(
+          children: [
+            Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -378,6 +410,13 @@ class _screenMain extends State<screenMain>{
                   ),
                 ),
 
+                const Divider(
+                  color: Color.fromRGBO(219, 219, 219, 1.0),  // Màu của đường gạch ngang
+                  thickness: 6.0,      // Độ dày của đường gạch ngang
+                  indent: 0.0,        // Khoảng cách từ mép trái đến bắt đầu của đường gạch ngang
+                  endIndent: 0.0,     // Khoảng cách từ mép phải đến cuối của đường gạch ngang
+                ),
+
                 const Padding(
                   padding: EdgeInsets.all(10),
                   child: Text("Famous",
@@ -392,25 +431,74 @@ class _screenMain extends State<screenMain>{
 
                 Padding(padding: EdgeInsets.only(left: 5, right: 5),
                     child: Container(
-                      height: 200,
+                      height: 180,
                       width: MediaQuery.sizeOf(context).width,
                       child: listData.isEmpty ? Center(
                         child: Image.asset("assets/Image/nodata.png"), // Hiển thị ảnh khi không có dữ liệu
                       )
-                      : ListView(
+                          : ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
                           for (Product item in listData)
-                            viewProduct(item.image, item.name, 4.5, formatCurrency(item.price)),
+                            viewProduct(4.5, formatCurrency(item.price), item),
                         ],
                       ),
                     )
+                ),
+
+                const Divider(
+                  color: Color.fromRGBO(219, 219, 219, 1.0),  // Màu của đường gạch ngang
+                  thickness: 6.0,      // Độ dày của đường gạch ngang
+                  indent: 0.0,        // Khoảng cách từ mép trái đến bắt đầu của đường gạch ngang
+                  endIndent: 0.0,     // Khoảng cách từ mép phải đến cuối của đường gạch ngang
+                ),
+
+                const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text("Danh Sách Sản Phẩm",
+                    style: TextStyle(
+                        decoration: TextDecoration.none,
+                        color: Colors.black,
+                        fontFamily: "Jua",
+                        fontSize: 15
+                    ),
+                  ),
+                ),
+                const Divider(
+                  color: Color.fromRGBO(219, 219, 219, 1.0),  // Màu của đường gạch ngang
+                  thickness: 1.0,      // Độ dày của đường gạch ngang
+                  indent: 0.0,        // Khoảng cách từ mép trái đến bắt đầu của đường gạch ngang
+                  endIndent: 0.0,     // Khoảng cách từ mép phải đến cuối của đường gạch ngang
+                ),
+
+                // GridView.count(
+                //   crossAxisCount: 2, // Số cột trong lưới
+                //   children: List.generate(listDataAll.length, (index) {
+                //     return viewProduct(4.5, formatCurrency(listDataAll[index].price), listDataAll[index]);
+                //   })
+                // )
+                Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: SizedBox(
+                    width: MediaQuery.sizeOf(context).width,
+                    height: 250,
+                    child: MasonryGridView.count(
+                      crossAxisCount: 2,
+                      itemCount: listDataAll.length,
+                      //mainAxisSpacing: ,
+                      //crossAxisSpacing: 2,
+
+                      itemBuilder: (context, index) {
+                        return viewProduct(4.5, formatCurrency(listDataAll[index].price), listDataAll[index]);
+                      },
+                    ),
+                  ),
                 )
               ],
             ),
-          )
-        ],
-      ),
+          ],
+        ),
+      )
     );
   }
 
@@ -419,8 +507,14 @@ class _screenMain extends State<screenMain>{
   }
 
 
-  Widget viewProduct(String image, String name, double star, String price){
-    return Padding(
+  Widget viewProduct(double star, String price, Product product){
+    List<dynamic> listResult = caluteRate(product.product_id);
+
+    return GestureDetector(
+      onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => detailScreen(product: product, listResultRate: listResult)));
+      },
+      child: Padding(
         padding: const EdgeInsets.only(right: 5),
         child: SizedBox(
           height: 180,
@@ -431,13 +525,13 @@ class _screenMain extends State<screenMain>{
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 80,
-                child: image == "none"?
-                const Center(child: Icon(Icons.image_not_supported_outlined, size: 50, color: Colors.grey,))
-                    : Center(child: Image.memory(base64ToImage(image)),)
+                  height: 80,
+                  child: product.image == "none"?
+                  const Center(child: Icon(Icons.image_not_supported_outlined, size: 50, color: Colors.grey,))
+                      : Center(child: Image.memory(base64ToImage(product.image)),)
               ),
               //Image.asset("assets/Image/noimage.png",),
-              Text(name,
+              Text(product.name,
                 style: const TextStyle(
                     decoration: TextDecoration.none,
                     color: Colors.black,
@@ -445,7 +539,7 @@ class _screenMain extends State<screenMain>{
                     fontSize: 15
                 ),
               ),
-              StarDisplayApp(value: 4, size: 15,),
+              StarDisplayApp(value: listResult[0], size: 15,),
               Text("$price VNĐ",
                 style: const TextStyle(
                     decoration: TextDecoration.none,
@@ -457,6 +551,7 @@ class _screenMain extends State<screenMain>{
             ],
           ),
         ),
+      ),
     );
   }
 }
