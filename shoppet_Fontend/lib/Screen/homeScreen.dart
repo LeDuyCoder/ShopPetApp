@@ -18,7 +18,7 @@ class _homeScreen extends State<homeScreen>{
   List<Widget> _buildScreens() {
     return [
       screenMain(),
-      detailScreen(),
+      cartScreen(),
       const Center(child: Text("Profile")),
     ];
   }

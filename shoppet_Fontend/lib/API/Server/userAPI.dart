@@ -11,10 +11,31 @@ class userAPI {
 
   String apiUrl = config.apiUrl;
 
-  // userAPI() {
-  //   //apiUrl = "http://192.168.1.5:8080";
-  //   apiUrl = "http:$"
-  // } // Thay đổi URL cho phù hợp
+
+
+  Future<List<User>?> getUsersByIds(List<String> userIds) async {
+    if (userIds.isEmpty) {
+      throw ArgumentError('userIds cannot be empty');
+    }
+    // Thay đổi URL theo thực tế
+    final userIdsParam = userIds.join(',');
+
+    try {
+      final response = await http.get(Uri.parse('$apiUrl/api/getUsersByIds?user_ids=$userIdsParam'));
+
+      if (response.statusCode == 200) {
+        List<dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        List<User> users = jsonResponse.map((data) => User.fromJson(data)).toList();
+        return users;
+      } else {
+        print("Failed to load user data: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw Exception('Failed to load user data');
+    }
+  }
 
   /// Lấy thông tin người dùng dựa trên [userId].
   ///

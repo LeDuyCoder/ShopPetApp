@@ -24,7 +24,7 @@ class rateAPI {
 
   // Lấy danh sách rate theo productID
   Future<List<Rate>?> getRatesByProductID(String productID) async {
-    final response = await http.get(Uri.parse('$apiUrl/api/getRatesByProductID/$productID'));
+    final response = await http.get(Uri.parse('$apiUrl/api/getRates?productID=$productID'));
 
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
@@ -40,7 +40,7 @@ class rateAPI {
 
   // Lấy danh sách rate theo userID
   Future<List<Rate>?> getRatesByUserID(String userID) async {
-    final response = await http.get(Uri.parse('$apiUrl/api/getRatesByUserID/$userID'));
+    final response = await http.get(Uri.parse('$apiUrl/api/getRates?userID=$userID'));
 
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
