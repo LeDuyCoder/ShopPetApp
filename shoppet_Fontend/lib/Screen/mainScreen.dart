@@ -19,6 +19,11 @@ import '../Model/apiModel/userModel.dart';
 import '../Widget/startDisplay.dart';
 
 class screenMain extends StatefulWidget{
+
+  final Function() togetherNavBar;
+
+  const screenMain({super.key, required this.togetherNavBar});
+
   @override
   State<StatefulWidget> createState() => _screenMain();
 
@@ -29,7 +34,7 @@ class _screenMain extends State<screenMain>{
   late final PageController _pageController;
   late Timer _timer;
   int _currentPage = 0;
-  late final List<Rate>? ListRate;
+  List<Rate>? ListRate = [];
 
   List<dynamic> caluteRate(String productID){
     int sumRate = 0;
@@ -41,8 +46,6 @@ class _screenMain extends State<screenMain>{
       }
     });
 
-
-    //print(double.parse((sumRate/amount).toStringAsFixed(1)));
     return [amount == 0 ? 0.0: double.parse((sumRate/amount).toStringAsFixed(1)), amount];
   }
 
@@ -52,7 +55,10 @@ class _screenMain extends State<screenMain>{
     rateAPI rateServiece = rateAPI();
     List<Product>? listProduct = await productService.getProducts();
     ListRate = await rateServiece.getRates();
-    return listProduct ?? [];
+
+    print(listProduct);
+
+    return listProduct ?? <Product>[];
   }
 
   @override
@@ -93,15 +99,17 @@ class _screenMain extends State<screenMain>{
         );
       }
 
-      List<Product> listRandom = [];
-
-      Random random = Random();
-
-      for(int i = 0; i < 5; i++){
-        listRandom.add(dataProduct.data![random.nextInt(dataProduct.data!.length)]);
+      if(dataProduct.hasError){
+        return const Center(child: Text("error"),);
       }
 
       if(dataProduct.hasData){
+        List<Product> listRandom = [];
+        Random random = Random();
+        for(int i = 0; i < 5; i++){
+          listRandom.add(dataProduct.data![random.nextInt(dataProduct.data!.length)]);
+        }
+
         return loadScreen(true, listRandom, dataProduct.data!);
       }else{
         return loadScreen(false);
@@ -512,7 +520,10 @@ class _screenMain extends State<screenMain>{
 
     return GestureDetector(
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => detailScreen(product: product, listResultRate: listResult)));
+        setState(() {
+          widget.togetherNavBar();
+        });
+        Navigator.push(context, MaterialPageRoute(builder: (context) => detailScreen(product: product, listResultRate: listResult, togeteNavBar: widget.togetherNavBar,)));
       },
       child: Padding(
         padding: const EdgeInsets.only(right: 5),

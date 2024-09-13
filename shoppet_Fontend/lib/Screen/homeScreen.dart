@@ -14,10 +14,20 @@ class homeScreen extends StatefulWidget{
 
 class _homeScreen extends State<homeScreen>{
   final PersistentTabController _controller = PersistentTabController(initialIndex: 0);
+  bool togeteNB = true;
+
+  void togeteNavbar(){
+    setState(() {
+      togeteNB = !togeteNB;
+    });
+  }
+
 
   List<Widget> _buildScreens() {
     return [
-      screenMain(),
+      screenMain(togetherNavBar: (){
+        togeteNavbar();
+      },),
       cartScreen(),
       const Center(child: Text("Profile")),
     ];
@@ -66,11 +76,11 @@ class _homeScreen extends State<homeScreen>{
       handleAndroidBackButtonPress: true,
       resizeToAvoidBottomInset: true,
       stateManagement: true,
-      hideNavigationBarWhenKeyboardAppears: true,
+      hideNavigationBarWhenKeyboardAppears: false,
       popBehaviorOnSelectedNavBarItemPress: PopBehavior.all,
       padding: const EdgeInsets.only(top: 10),
       backgroundColor: Colors.white,
-      isVisible: true,
+      isVisible: togeteNB,
       animationSettings: const NavBarAnimationSettings(
         navBarItemAnimation: ItemAnimationSettings(
           duration: Duration(milliseconds: 400),

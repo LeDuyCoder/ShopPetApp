@@ -17,8 +17,9 @@ class detailScreen extends StatefulWidget{
 
   final Product product;
   final List<dynamic> listResultRate;
+  final Function() togeteNavBar;
 
-  const detailScreen({super.key, required this.product, required this.listResultRate});
+  const detailScreen({super.key, required this.product, required this.listResultRate, required this.togeteNavBar});
 
   @override
   State<StatefulWidget> createState() => _detailScreen();
@@ -68,6 +69,7 @@ class _detailScreen extends State<detailScreen>{
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color.fromRGBO(232, 124, 0, 1.0),),
           onPressed: () {
+            widget.togeteNavBar();
             Navigator.pop(context);
           },
         ),
@@ -76,65 +78,160 @@ class _detailScreen extends State<detailScreen>{
           IconButton(onPressed: (){}, icon: const Icon(Icons.shopping_cart_rounded))
         ],
       ),
-      body: Container(
-          color: Colors.white,
-          child: ListView(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: Stack(
+        children: [
+          Container(
+              color: Colors.white,
+              child: ListView(
                 children: [
-                  widget.product.image == "none" ? const Center(child: Icon(Icons.image_not_supported_outlined, color: Colors.grey, size: 100,),): Image.memory(base64ToImage(widget.product.image), width: MediaQuery.sizeOf(context).width, height: 250, fit : BoxFit.fill,),
-                  Padding(padding: EdgeInsets.all(5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      widget.product.image == "none" ? const Center(child: Icon(Icons.image_not_supported_outlined, color: Colors.grey, size: 100,),): Image.memory(base64ToImage(widget.product.image), width: MediaQuery.sizeOf(context).width, height: 250, fit : BoxFit.fill,),
+                      Padding(padding: EdgeInsets.all(5),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.star_outlined, color: Colors.orangeAccent, size: 20,),
-                            const SizedBox(width: 5,),
-                            Text("${widget.listResultRate[0]}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
-                            const SizedBox(width: 5,),
-                            Text("(${widget.listResultRate[1]})", style: const TextStyle(color: Colors.grey),)
+                            Row(
+                              children: [
+                                const Icon(Icons.star_outlined, color: Colors.orangeAccent, size: 20,),
+                                const SizedBox(width: 5,),
+                                Text("${widget.listResultRate[0]}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
+                                const SizedBox(width: 5,),
+                                Text("(${widget.listResultRate[1]})", style: const TextStyle(color: Colors.grey),)
+                              ],
+                            ),
+                            Text(widget.product.name, style: const TextStyle(fontFamily: "Itim", fontSize: 30),),
+                            Text("${formatCurrency(widget.product.price)} VNĐ", style: TextStyle(fontSize: 20, fontFamily: "Itim", color: Color.fromRGBO(232, 124, 0, 1.0)),),
+                            const Text("Mô Tả Chi Tiết", style: TextStyle(fontFamily: "Itim"),),
                           ],
                         ),
-                        Text(widget.product.name, style: const TextStyle(fontFamily: "Itim", fontSize: 30),),
-                        Text("${formatCurrency(widget.product.price)} VNĐ", style: TextStyle(fontSize: 20, fontFamily: "Itim", color: Color.fromRGBO(232, 124, 0, 1.0)),),
-                        const Text("Mô Tả Chi Tiết", style: TextStyle(fontFamily: "Itim"),),
-                      ],
-                    ),
-                  ),
-                  ExpandableText(
-                    text: widget.product.description.replaceAll("\\n", "\n"),
+                      ),
+                      ExpandableText(
+                        text: widget.product.description.replaceAll("\\n", "\n"),
+                      ),
+
+                      const Divider(
+                        color: Color.fromRGBO(219, 219, 219, 1.0),  // Màu của đường gạch ngang
+                        thickness: 6.0,      // Độ dày của đường gạch ngang
+                        indent: 0.0,        // Khoảng cách từ mép trái đến bắt đầu của đường gạch ngang
+                        endIndent: 0.0,     // Khoảng cách từ mép phải đến cuối của đường gạch ngang
+                      ),
+                    ],
                   ),
 
-                  const Divider(
-                    color: Color.fromRGBO(219, 219, 219, 1.0),  // Màu của đường gạch ngang
-                    thickness: 6.0,      // Độ dày của đường gạch ngang
-                    indent: 0.0,        // Khoảng cách từ mép trái đến bắt đầu của đường gạch ngang
-                    endIndent: 0.0,     // Khoảng cách từ mép phải đến cuối của đường gạch ngang
+                  const Padding(padding: EdgeInsets. only(left: 5, top: 5),
+                    child: Text("Đánh Giá", style: TextStyle(fontFamily: "Itim", fontSize: 20),),
                   ),
+
+                  FutureBuilder(future: loadComment(widget.product.product_id), builder: (context, dataComment){
+                    if(dataComment.connectionState == ConnectionState.waiting){
+                      return Center(
+                        child: Container(
+                          height: 50,
+                          width: 50,
+                          child: const CircularProgressIndicator(color: Colors.orange),
+                        ),
+                      );
+                    }
+
+                    if(dataComment.hasData){
+                      return loadWidgetComment(dataComment.data!);
+                    }else{
+                      return Center(
+                        child: Image.asset("assets/Image/nodata.png", width: 150,),
+                      );
+                    }
+                  }),
+                  const SizedBox(height: 100,)
                 ],
+              )
+          ),
+          Container(
+            width: MediaQuery.sizeOf(context).width,
+            height: MediaQuery.sizeOf(context).height,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 70,
+                width: MediaQuery.sizeOf(context).width,
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey,
+                        offset: Offset(0, -1),
+                        blurRadius: 10,
+                        spreadRadius: 1
+                      )
+                    ]
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () async {},
+                        child: Container(
+                          width: MediaQuery.sizeOf(context).width - MediaQuery.sizeOf(context).width*0.5 - 25,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 1.0, // Độ dày của viền
+                            ), // Màu nền của Container
+                            borderRadius: BorderRadius.circular(5.0), // Bo tròn góc
+                          ),
+                          child: const Center(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.shopping_bag_outlined),
+                                SizedBox(width: 5,),
+                                Text(
+                                  'ADD TO CART',
+                                  style: TextStyle(color: Color.fromRGBO(90, 53, 11, 1.0), fontSize: 12),
+                                ),
+                              ],
+                            )
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10,),
+                      GestureDetector(
+                        onTap: () async {},
+                        child: Container(
+                          width: MediaQuery.sizeOf(context).width - MediaQuery.sizeOf(context).width*0.5 - 25,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: const Color.fromRGBO(255, 196, 126, 1.0), // Màu nền của Container
+                            borderRadius: BorderRadius.circular(5.0), // Bo tròn góc
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color.fromRGBO(237, 177, 107, 1.0), // Màu của shadow
+                                spreadRadius: 0, // Bán kính lan tỏa của shadow
+                                blurRadius: 0, // Độ mờ của shadow
+                                offset: Offset(3, 3), // Vị trí của shadow
+                              ),
+                            ],
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'BUY NOW',
+                              style: TextStyle(color: Color.fromRGBO(90, 53, 11, 1.0), fontSize: 12),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               ),
-
-              const Padding(padding: EdgeInsets. only(left: 5, top: 5),
-                child: Text("Đánh Giá", style: TextStyle(fontFamily: "Itim", fontSize: 20),),
-              ),
-
-              FutureBuilder(future: loadComment(widget.product.product_id), builder: (context, dataComment){
-                if(dataComment.connectionState == ConnectionState.waiting){
-                  return CircularProgressIndicator(color: Colors.orange);
-                }
-
-                if(dataComment.hasData){
-                  return loadWidgetComment(dataComment.data!);
-                }else{
-                  return Center(
-                    child: Image.asset("assets/Image/nodata.png", width: 150,),
-                  );
-                }
-              }),
-            ],
-          )
+            ),
+          ),
+        ],
       )
     );
   }
