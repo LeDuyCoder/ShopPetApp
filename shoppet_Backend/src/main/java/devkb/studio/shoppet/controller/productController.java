@@ -68,8 +68,6 @@ public class productController {
 
         List<Map<String, Object>> results = postgresService.executeQuery(query);
 
-        System.out.println(results.toString());
-
         for (Map<String, Object> row : results) {
             Product product = Product.builder()
                     .product_id((String) row.get("product_id"))

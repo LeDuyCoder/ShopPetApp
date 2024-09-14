@@ -11,10 +11,31 @@ class userAPI {
 
   String apiUrl = config.apiUrl;
 
-  // userAPI() {
-  //   //apiUrl = "http://192.168.1.5:8080";
-  //   apiUrl = "http:$"
-  // } // Thay đổi URL cho phù hợp
+
+
+  Future<List<User>?> getUsersByIds(List<String> userIds) async {
+    if (userIds.isEmpty) {
+      throw ArgumentError('userIds cannot be empty');
+    }
+    // Thay đổi URL theo thực tế
+    final userIdsParam = userIds.join(',');
+
+    try {
+      final response = await http.get(Uri.parse('$apiUrl/api/getUsersByIds?user_ids=$userIdsParam'));
+
+      if (response.statusCode == 200) {
+        List<dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        List<User> users = jsonResponse.map((data) => User.fromJson(data)).toList();
+        return users;
+      } else {
+        print("Failed to load user data: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw Exception('Failed to load user data');
+    }
+  }
 
   /// Lấy thông tin người dùng dựa trên [userId].
   ///
@@ -88,6 +109,48 @@ class userAPI {
     }
   }
 
+  /// Lấy thông tin người dùng dựa trên [mail].
+  ///
+  /// Nếu không truyền vào [mail], giá trị mặc định là `"none"`.
+  ///
+  /// **Tham số:**
+  /// - [mail]: mail của người dùng cần lấy thông tin. Nếu không cung cấp, mặc định là `"none"`.
+  ///
+  /// **Trả về:**
+  /// - Một đối tượng `User` nếu thành công hoặc `null` nếu có lỗi xảy ra.
+  ///
+  /// **Lưu ý:**
+  /// - Đảm bảo rằng `mail` không phải là `"none"` khi gọi hàm để tránh lỗi.
+  Future<List<User>?> getUserByMail([String mail = "none"]) async {
+    try {
+      final response = await http.get(
+          Uri.parse('$apiUrl/api/getUser?mail=$mail'));
+
+      if (response.statusCode == 200) {
+        List<dynamic> jsonResponse;
+        if (response.headers['content-type']?.contains('charset=utf-8') ??
+            false) {
+          jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        } else {
+          jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        }
+        List<dynamic> data = jsonResponse;
+
+        List<User> listUsers = [];
+
+        data.forEach((item){
+          listUsers.add(User.fromJson(item));
+        });
+
+        return listUsers;
+      } else {
+        print("Failed to load user data");
+        return null;
+      }
+    }catch(e){
+      throw Exception(config.ERROR_SERVER);
+    }
+  }
 
   /// Cập nhật thông tin người dùng trong hệ thống thông qua HTTP PUT request.
   ///
@@ -239,17 +302,15 @@ class userAPI {
     }
   }
 
-  /**
-   * Gửi yêu cầu kiểm tra mật khẩu của người dùng.
-   *
-   * @param username Tên đăng nhập của người dùng (bắt buộc).
-   * @param password Mật khẩu của người dùng (bắt buộc).
-   * @return Future<HTTPReult> trả về kết quả kiểm tra mật khẩu.
-   * - `HTTPReult.ok` nếu yêu cầu thành công và mật khẩu chính xác (mã trạng thái HTTP 200).
-   * - `HTTPReult.Unauthorized` nếu mật khẩu không chính xác hoặc không tìm thấy người dùng (mã trạng thái HTTP 401).
-   * - `HTTPReult.error` nếu có lỗi xảy ra trong quá trình gửi yêu cầu hoặc xử lý phản hồi.
-   * @throws Exception nếu có lỗi xảy ra trong quá trình gửi yêu cầu hoặc xử lý phản hồi.
-   */
+  /// Gửi yêu cầu kiểm tra mật khẩu của người dùng.
+  ///
+  /// @param username Tên đăng nhập của người dùng (bắt buộc).
+  /// @param password Mật khẩu của người dùng (bắt buộc).
+  /// @return Future<HTTPReult> trả về kết quả kiểm tra mật khẩu.
+  /// - `HTTPReult.ok` nếu yêu cầu thành công và mật khẩu chính xác (mã trạng thái HTTP 200).
+  /// - `HTTPReult.Unauthorized` nếu mật khẩu không chính xác hoặc không tìm thấy người dùng (mã trạng thái HTTP 401).
+  /// - `HTTPReult.error` nếu có lỗi xảy ra trong quá trình gửi yêu cầu hoặc xử lý phản hồi.
+  /// @throws Exception nếu có lỗi xảy ra trong quá trình gửi yêu cầu hoặc xử lý phản hồi.
   Future<HTTPReult> checkpass({required String username, required String password}) async {
     try {
       final response = await http.post(

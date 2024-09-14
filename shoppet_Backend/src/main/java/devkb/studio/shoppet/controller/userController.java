@@ -34,29 +34,19 @@ public class userController {
      *
      * @param user_id ID của người dùng (tùy chọn).
      * @param username Tên đăng nhập của người dùng (tùy chọn).
+     * @param mail Email của người dùng (tùy chọn).
      * @return ResponseEntity với danh sách các đối tượng User.
      * - `200 OK` nếu tìm thấy người dùng hoặc danh sách người dùng rỗng.
      */
     @GetMapping("/getUser")
     public ResponseEntity<List<User>> getUsers(
             @RequestParam(value = "user_id", defaultValue = "none") String user_id,
-            @RequestParam(value = "username", defaultValue = "none") String username
+            @RequestParam(value = "username", defaultValue = "none") String username,
+            @RequestParam(value = "mail", defaultValue = "none") String mail
     ) {
         List<User> users = new ArrayList<>();
 
-        String query = "SELECT * FROM \"user\"";
-        if (!user_id.equals("none") || !username.equals("none")) {
-            query += " WHERE";
-            if (!user_id.equals("none")) {
-                query += " user_id = '" + user_id + "'";
-            }
-            if (!username.equals("none")) {
-                if (!user_id.equals("none")) {
-                    query += " AND";
-                }
-                query += " username = '" + username + "'";
-            }
-        }
+        String query = getString(user_id, username, mail);
 
         List<Map<String, Object>> results = postgresService.executeQuery(query);
 
@@ -76,6 +66,34 @@ public class userController {
         }
 
         return ResponseEntity.ok(users);
+    }
+
+    private static String getString(String user_id, String username, String mail) {
+        String query = "SELECT * FROM \"user\"";
+        boolean hasCondition = false;
+
+        if (!user_id.equals("none") || !username.equals("none") || !mail.equals("none")) {
+            query += " WHERE";
+
+            if (!user_id.equals("none")) {
+                query += " user_id = '" + user_id + "'";
+                hasCondition = true;
+            }
+            if (!username.equals("none")) {
+                if (hasCondition) {
+                    query += " AND";
+                }
+                query += " username = '" + username + "'";
+                hasCondition = true;
+            }
+            if (!mail.equals("none")) {
+                if (hasCondition) {
+                    query += " AND";
+                }
+                query += " mail = '" + mail + "'";
+            }
+        }
+        return query;
     }
 
 
@@ -102,7 +120,7 @@ public class userController {
             @RequestParam(value = "phone", defaultValue = "0") long phone,
             @RequestParam(value = "address", defaultValue = "none") String address
     ) {
-        ResponseEntity<List<User>> listUser = this.getUsers("none", username);
+        ResponseEntity<List<User>> listUser = this.getUsers("none", username, "none");
         if(!Objects.requireNonNull(listUser.getBody()).isEmpty()){
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }else{
@@ -139,7 +157,7 @@ public class userController {
      */
     @GetMapping("/checkUser")
     private boolean userExists(String username) {
-        ResponseEntity<List<User>> listUser = this.getUsers("none", username);
+        ResponseEntity<List<User>> listUser = this.getUsers("none", username, "none");
         return !Objects.requireNonNull(listUser.getBody()).isEmpty();
     }
 
@@ -260,7 +278,7 @@ public class userController {
         }
 
         // Truy vấn người dùng dựa trên username
-        ResponseEntity<List<User>> listUser = this.getUsers("none", username);
+        ResponseEntity<List<User>> listUser = this.getUsers("none", username, "none");
         List<User> users = listUser.getBody();
 
         if (users == null || users.isEmpty()) {

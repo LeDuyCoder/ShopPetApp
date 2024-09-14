@@ -1,17 +1,17 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:shoppet_fontend/Screen/LoginScreen.dart';
-import 'package:shoppet_fontend/Screen/RegisterScreen.dart';
-import 'package:shoppet_fontend/Screen/mainScreen.dart';
-
-import 'Screen/SlashSceen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shoppet_fontend/API/Local/config.dart';
+import 'package:shoppet_fontend/API/Server/rateAPI.dart';
+import 'package:shoppet_fontend/Model/apiModel/rateModel.dart';
+import 'package:shoppet_fontend/Screen/LoginAndRegister.dart';
+import 'package:shoppet_fontend/Screen/SlashSceen.dart';
+import 'package:shoppet_fontend/Screen/cartScreen.dart';
+import 'package:shoppet_fontend/Screen/homeScreen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,20 +31,20 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: screenMain());
+        home: cartScreen());
   }
 
   Widget ThreadDevice() {
     if (!kIsWeb) {
       if (Platform.isAndroid) {
-        return LoginScreen();
+        return Slashsceen();
       } else if (Platform.isIOS) {
-        return Container();
+        return const Center(child: Text("iOS not supported yet"));
       } else {
-        return Container();
+        return const Center(child: Text("Unsupported platform"));
       }
     } else {
-      return Container();
+      return const Center(child: Text("Web not supported yet"));
     }
   }
 }

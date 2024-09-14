@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shoppet_fontend/Screen/LoginScreen.dart';
 
+import 'RegisterScreen.dart';
+
 class Login_Register extends StatelessWidget {
   const Login_Register({super.key});
 
@@ -31,7 +33,7 @@ class Login_Register extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image(
-                    image: AssetImage("assets/logoShopPet_1.png"),
+                    image: AssetImage("assets/Image/logoShopPet_1.png"),
                     width: 90,
                   ),
                   Padding(padding: EdgeInsets.all(10)),
@@ -53,7 +55,7 @@ class Login_Register extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image(
-                    image: AssetImage("assets/undraw_good_doggy_re_eet7.png"),
+                    image: AssetImage("assets/Image/undraw_good_doggy_re_eet7.png"),
                     height: MediaQuery.sizeOf(context).height-MediaQuery.sizeOf(context).height*0.7,
                   ),
                 ],
@@ -75,7 +77,10 @@ class Login_Register extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () async {
-
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => Registerscreen()),
+                        );
                       },
                       child: Container(
                         width: MediaQuery.sizeOf(context).width,
