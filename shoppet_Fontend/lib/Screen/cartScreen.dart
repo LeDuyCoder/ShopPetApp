@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shoppet_fontend/API/Server/cartItemAPI.dart';
+import 'package:shoppet_fontend/Model/apiModel/cartItemModel.dart';
 
 class cartScreen extends StatefulWidget {
   @override
@@ -7,6 +9,41 @@ class cartScreen extends StatefulWidget {
 }
 
 class _cartScreen extends State<cartScreen> {
+  List<cartItems> cartItemsList = [];
+  @override
+  void initState() {
+    super.initState();
+    fetchCartItems(); // Lấy dữ liệu từ API khi khởi tạo màn hình
+  }
+
+  // Gọi API để lấy danh sách sản phẩm trong giỏ hàng
+  void fetchCartItems() async {
+    cartItemAPI api = cartItemAPI();
+    List<cartItems>? items =
+        await api.getCartItemsbyCartID(cartID: "your_cart_id_here");
+
+    if (items != null) {
+      setState(() {
+        cartItemsList = items;
+      });
+    } else {
+      // Xử lý trường hợp lỗi hoặc không có sản phẩm nào
+      print("Failed to load cart items");
+    }
+  }
+
+  // Hàm cập nhật số lượng sản phẩm
+  void updateQuantity(int index, int change) {
+    setState(() {});
+  }
+
+  // Hàm xóa toàn bộ giỏ hàng
+  void clearCart() {
+    setState(() {
+      cartItemsList.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

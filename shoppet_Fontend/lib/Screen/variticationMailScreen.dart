@@ -10,24 +10,22 @@ import 'package:rive/rive.dart' as rive;
 import 'package:shoppet_fontend/API/Server/userAPI.dart';
 import 'package:shoppet_fontend/Screen/LoginScreen.dart';
 
-class variticationMailScreen extends StatefulWidget{
+class variticationMailScreen extends StatefulWidget {
   final String code;
   final Function(String newcode) sendMail;
   final Map<String, dynamic> dataUser;
 
-  const variticationMailScreen({super.key,
-    required this.code,
-    required this.sendMail,
-    required this.dataUser
-  });
+  const variticationMailScreen(
+      {super.key,
+      required this.code,
+      required this.sendMail,
+      required this.dataUser});
 
   @override
   State<StatefulWidget> createState() => _variticationMailScreen();
-
 }
 
-class _variticationMailScreen extends State<variticationMailScreen>{
-
+class _variticationMailScreen extends State<variticationMailScreen> {
   final TextEditingController _pinController = TextEditingController();
   String buttonResend = "RESEND";
   bool isButtonDisabled = false; // Biến để kiểm soát việc bấm nút
@@ -63,13 +61,16 @@ class _variticationMailScreen extends State<variticationMailScreen>{
 
   Future<void> createAccount() async {
     userAPI userService = userAPI();
-    userService.createUser(username: widget.dataUser["username"], password: widget.dataUser["password"], mail: widget.dataUser["mail"]);
+    await userService.createUser(
+        username: widget.dataUser["username"],
+        password: widget.dataUser["password"],
+        mail: widget.dataUser["mail"]);
   }
 
   // Hàm để kiểm tra giá trị nhập vào
   void _onPinChanged(String value, BuildContext context) {
-    if(value.length == 6){
-      if(value == codeCheck){
+    if (value.length == 6) {
+      if (value == codeCheck) {
         createAccount();
         dialogSuccess(context);
       }
@@ -104,7 +105,8 @@ class _variticationMailScreen extends State<variticationMailScreen>{
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()));
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: Color.fromRGBO(232, 124, 0, 1.0),
@@ -115,7 +117,9 @@ class _variticationMailScreen extends State<variticationMailScreen>{
                   children: [
                     Icon(Icons.login, color: Colors.white),
                     SizedBox(width: 8),
-                    Text('Đăng Nhập', style: TextStyle(color: Colors.white, fontFamily: "Itim")),
+                    Text('Đăng Nhập',
+                        style:
+                            TextStyle(color: Colors.white, fontFamily: "Itim")),
                   ],
                 ),
               ),
@@ -126,94 +130,136 @@ class _variticationMailScreen extends State<variticationMailScreen>{
     );
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: ListView(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: 60,),
-                Image.asset("assets/Image/OTP.png", width: 200, height: 200,),
-                SizedBox(height: 50,),
-                const Text("Mail Verification", style: TextStyle(color: Colors.black, decoration: TextDecoration.none, fontFamily: "Itim", fontSize: 25),),
-                Column(
-                  children: [
-                    const Text("Enter the code send to", style: TextStyle(color: Colors.black, decoration: TextDecoration.none, fontFamily: "Mali", fontSize: 12),),
-                    Text(widget.dataUser["mail"], style: const TextStyle(color: Colors.black, decoration: TextDecoration.none, fontFamily: "Mali", fontSize: 12, fontWeight: FontWeight.bold),),
-                  ],
-                ),
-                Padding(padding: EdgeInsets.all(10),
-                  child: PinCodeTextField(
-                    keyboardType: TextInputType.number,
-                    appContext: context,
-                    length: 6, // Số lượng ô mã PIN
-                    obscureText: false, // Hiện thị ký tự
-                     // Ký tự thay thế nếu dùng `obscureText`
-                    animationType: AnimationType.scale,
-                    validator: (v) {
-                      if (v!.length < 6) {
-                        return null;
-                      } else {
-                        return null;
-                      }
-                    },
-                    pinTheme: PinTheme(
-                      shape: PinCodeFieldShape.box,
-                      borderRadius: BorderRadius.circular(5),
-                      fieldHeight: 40,
-                      fieldWidth: 40,
-                      activeFillColor: Colors.white,
-                      inactiveFillColor: Colors.white,
-                      selectedFillColor: Colors.white,
-                      activeColor: const Color.fromRGBO(232, 124, 0, 1.0),
-                      inactiveColor: Colors.green,
-                      selectedColor: const Color.fromRGBO(232, 124, 0, 1.0),
-                    ),
-                    cursorColor: const Color.fromRGBO(232, 124, 0, 0.5),
-                    animationDuration: const Duration(milliseconds: 300),
-                    backgroundColor: Colors.transparent,
-                    enableActiveFill: true,
-                    controller: _pinController,
-                    onCompleted: (v) {
-                      print("Completed: $v");
-                      // Bạn có thể thực hiện các hành động khác ở đây khi người dùng hoàn tất nhập mã PIN
-                    },
-                    onChanged: (value) {
-                      _onPinChanged(value, context);
-                    },
+          child: ListView(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 60,
+              ),
+              Image.asset(
+                "assets/Image/OTP.png",
+                width: 200,
+                height: 200,
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              const Text(
+                "Mail Verification",
+                style: TextStyle(
+                    color: Colors.black,
+                    decoration: TextDecoration.none,
+                    fontFamily: "Itim",
+                    fontSize: 25),
+              ),
+              Column(
+                children: [
+                  const Text(
+                    "Enter the code send to",
+                    style: TextStyle(
+                        color: Colors.black,
+                        decoration: TextDecoration.none,
+                        fontFamily: "Mali",
+                        fontSize: 12),
                   ),
+                  Text(
+                    widget.dataUser["mail"],
+                    style: const TextStyle(
+                        color: Colors.black,
+                        decoration: TextDecoration.none,
+                        fontFamily: "Mali",
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.all(10),
+                child: PinCodeTextField(
+                  keyboardType: TextInputType.number,
+                  appContext: context,
+                  length: 6, // Số lượng ô mã PIN
+                  obscureText: false, // Hiện thị ký tự
+                  // Ký tự thay thế nếu dùng `obscureText`
+                  animationType: AnimationType.scale,
+                  validator: (v) {
+                    if (v!.length < 6) {
+                      return null;
+                    } else {
+                      return null;
+                    }
+                  },
+                  pinTheme: PinTheme(
+                    shape: PinCodeFieldShape.box,
+                    borderRadius: BorderRadius.circular(5),
+                    fieldHeight: 40,
+                    fieldWidth: 40,
+                    activeFillColor: Colors.white,
+                    inactiveFillColor: Colors.white,
+                    selectedFillColor: Colors.white,
+                    activeColor: const Color.fromRGBO(232, 124, 0, 1.0),
+                    inactiveColor: Colors.green,
+                    selectedColor: const Color.fromRGBO(232, 124, 0, 1.0),
+                  ),
+                  cursorColor: const Color.fromRGBO(232, 124, 0, 0.5),
+                  animationDuration: const Duration(milliseconds: 300),
+                  backgroundColor: Colors.transparent,
+                  enableActiveFill: true,
+                  controller: _pinController,
+                  onCompleted: (v) {
+                    print("Completed: $v");
+                    // Bạn có thể thực hiện các hành động khác ở đây khi người dùng hoàn tất nhập mã PIN
+                  },
+                  onChanged: (value) {
+                    _onPinChanged(value, context);
+                  },
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Bạn không nhận được code", style: TextStyle(color: Colors.black, decoration: TextDecoration.none, fontFamily: "Mli", fontSize: 12),),
-                    const SizedBox(width: 5,),
-                    GestureDetector(
-                      onTap: (){
-                        var random = Random();
-                        int newCode = 100000 + random.nextInt(900000);
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Bạn không nhận được code",
+                    style: TextStyle(
+                        color: Colors.black,
+                        decoration: TextDecoration.none,
+                        fontFamily: "Mli",
+                        fontSize: 12),
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      var random = Random();
+                      int newCode = 100000 + random.nextInt(900000);
 
-                        codeCheck = "$newCode";
+                      codeCheck = "$newCode";
 
-                        widget.sendMail('$newCode');
-                        startCountdown();
-                      },
-                      child: Text(buttonResend, style: const TextStyle(color: const Color.fromRGBO(232, 124, 0, 1.0), decoration: TextDecoration.none, fontFamily: "Mali", fontSize: 12),),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          ],
-        )
-      ),
+                      widget.sendMail('$newCode');
+                      startCountdown();
+                    },
+                    child: Text(
+                      buttonResend,
+                      style: const TextStyle(
+                          color: const Color.fromRGBO(232, 124, 0, 1.0),
+                          decoration: TextDecoration.none,
+                          fontFamily: "Mali",
+                          fontSize: 12),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+        ],
+      )),
     );
   }
-
 }
