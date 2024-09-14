@@ -117,6 +117,41 @@ class productAPI{
     }
   }
 
+  /// Lấy sản phẩm dựa trên [name].
+  ///
+  /// Nếu không truyền vào [name], giá trị mặc định là `"none"`.
+  ///
+  /// **Tham số:**
+  /// - [name]: Tên của sản phẩm cần lấy thông tin. Nếu không cung cấp, mặc định là `"none"`.
+  ///
+  /// **Trả về:**
+  /// - Một danh sách `Product` nếu thành công hoặc `null` nếu không có sản phẩm nào.
+  ///
+  /// **Lưu ý:**
+  /// - Đảm bảo rằng `name` không phải là `"none"` khi gọi hàm để tránh lỗi.
+  Future<List<Product>?> searchProductByName(String name) async {
+    try {
+      final response = await http.get(Uri.parse('$apiUrl/api/searchProduct?name=$name'));
+
+      if (response.statusCode == 204) {
+        return null;
+      } else if (response.statusCode == 200) {
+        List<dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        List<Product> products = [];
+        for (var product in jsonResponse) {
+          Product productOutput = Product.fromJson(product as Map<String, dynamic>);
+          products.add(productOutput);
+        }
+        return products;
+      }else{
+        return null;
+      }
+    } catch (e) {
+      throw Exception(config.ERROR_SERVER);
+    }
+    return null;
+  }
+
   /// Lấy sản phẩm dựa trên [categoryId].
   ///
   /// Nếu không truyền vào [categoryId], giá trị mặc định là `"none"`.

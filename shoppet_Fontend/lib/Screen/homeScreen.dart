@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
+import 'package:shoppet_fontend/Screen/categoryScreen.dart';
 import 'package:shoppet_fontend/Screen/mainScreen.dart';
+import 'package:shoppet_fontend/Screen/searchScreen.dart';
+import 'package:shoppet_fontend/Screen/showSearchScreen.dart';
 
 import 'cartScreen.dart';
 import 'detailScreen.dart';

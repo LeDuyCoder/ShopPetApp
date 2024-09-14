@@ -12,11 +12,13 @@ import 'package:shoppet_fontend/API/Server/productAPI.dart';
 import 'package:shoppet_fontend/API/Server/rateAPI.dart';
 import 'package:shoppet_fontend/Model/apiModel/productModel.dart';
 import 'package:shoppet_fontend/Screen/detailScreen.dart';
+import 'package:shoppet_fontend/Screen/searchScreen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../Model/apiModel/rateModel.dart';
 import '../Model/apiModel/userModel.dart';
 import '../Widget/startDisplay.dart';
+import 'categoryScreen.dart';
 
 class screenMain extends StatefulWidget{
 
@@ -152,10 +154,15 @@ class _screenMain extends State<screenMain>{
                     IconButton(onPressed: (){}, icon: const Icon(Icons.notifications_none, color: Colors.grey,))
                   ],
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 Center(
                   child: GestureDetector(
-                    onTap: (){} ,
+                    onTap: (){
+                      widget.togetherNavBar();
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => searchScreen(listProductFamous: listData, togeNavabar: (){
+                        widget.togetherNavBar();
+                      })));
+                    } ,
                     child: Container(
                       width: MediaQuery.sizeOf(context).width-30, // Độ rộng của Container
                       height: 30, // Chiều cao của Container
@@ -238,7 +245,12 @@ class _screenMain extends State<screenMain>{
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
-                          onTap: (){},
+                          onTap: (){
+                            widget.togetherNavBar();
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryScreen(categoryID: 'dog_tag', togeteNavBar: (){
+                              widget.togetherNavBar();
+                            },)));
+                          },
                           child: Column(
                             children: [
                               Container(
@@ -266,7 +278,12 @@ class _screenMain extends State<screenMain>{
                           )
                       ),
                       GestureDetector(
-                          onTap: (){},
+                          onTap: (){
+                            widget.togetherNavBar();
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryScreen(categoryID: 'cat_tag', togeteNavBar: (){
+                              widget.togetherNavBar();
+                            },)));
+                          },
                           child: Column(
                             children: [
                               Container(
@@ -294,7 +311,12 @@ class _screenMain extends State<screenMain>{
                           )
                       ),
                       GestureDetector(
-                          onTap: (){},
+                          onTap: (){
+                            widget.togetherNavBar();
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryScreen(categoryID: 'bird_tag', togeteNavBar: (){
+                              widget.togetherNavBar();
+                            },)));
+                          },
                           child: Column(
                             children: [
                               Container(
@@ -322,7 +344,11 @@ class _screenMain extends State<screenMain>{
                           )
                       ),
                       GestureDetector(
-                          onTap: (){},
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryScreen(categoryID: 'turtle_tag', togeteNavBar: (){
+                              widget.togetherNavBar();
+                            },)));
+                          },
                           child: Column(
                             children: [
                               Container(
@@ -350,7 +376,12 @@ class _screenMain extends State<screenMain>{
                           )
                       ),
                       GestureDetector(
-                          onTap: (){},
+                          onTap: (){
+                            widget.togetherNavBar();
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryScreen(categoryID: 'rabbit_tag', togeteNavBar: (){
+                              widget.togetherNavBar();
+                            },)));
+                          },
                           child: Column(
                             children: [
                               Container(
