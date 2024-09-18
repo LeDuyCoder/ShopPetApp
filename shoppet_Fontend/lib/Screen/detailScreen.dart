@@ -18,8 +18,9 @@ class detailScreen extends StatefulWidget{
   final Product product;
   final List<dynamic> listResultRate;
   final Function() togeteNavBar;
+  final bool runFunction;
 
-  const detailScreen({super.key, required this.product, required this.listResultRate, required this.togeteNavBar});
+  const detailScreen({super.key, required this.product, required this.listResultRate, required this.togeteNavBar, this.runFunction = true});
 
   @override
   State<StatefulWidget> createState() => _detailScreen();
@@ -69,7 +70,9 @@ class _detailScreen extends State<detailScreen>{
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color.fromRGBO(232, 124, 0, 1.0),),
           onPressed: () {
-            widget.togeteNavBar();
+            if(widget.runFunction) {
+              widget.togeteNavBar();
+            }
             Navigator.pop(context);
           },
         ),

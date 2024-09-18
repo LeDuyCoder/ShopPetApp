@@ -1,33 +1,37 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
+import 'package:shoppet_fontend/Screen/categoryScreen.dart';
 import 'package:shoppet_fontend/Screen/mainScreen.dart';
+import 'package:shoppet_fontend/Screen/searchScreen.dart';
+import 'package:shoppet_fontend/Screen/showSearchScreen.dart';
 
 import 'cartScreen.dart';
 import 'detailScreen.dart';
 
-class homeScreen extends StatefulWidget{
+class homeScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _homeScreen();
-
 }
 
-class _homeScreen extends State<homeScreen>{
-  final PersistentTabController _controller = PersistentTabController(initialIndex: 0);
+class _homeScreen extends State<homeScreen> {
+  final PersistentTabController _controller =
+      PersistentTabController(initialIndex: 0);
   bool togeteNB = true;
 
-  void togeteNavbar(){
+  void togeteNavbar() {
     setState(() {
       togeteNB = !togeteNB;
     });
   }
 
-
   List<Widget> _buildScreens() {
     return [
-      screenMain(togetherNavBar: (){
-        togeteNavbar();
-      },),
+      screenMain(
+        togetherNavBar: () {
+          togeteNavbar();
+        },
+      ),
       cartScreen(),
       const Center(child: Text("Profile")),
     ];
@@ -42,7 +46,10 @@ class _homeScreen extends State<homeScreen>{
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.shopping_cart_rounded, size: 25,),
+        icon: const Icon(
+          Icons.shopping_cart_rounded,
+          size: 25,
+        ),
         title: "Cart",
         activeColorPrimary: const Color.fromRGBO(237, 177, 107, 1.0),
         inactiveColorPrimary: Colors.grey,
@@ -97,6 +104,4 @@ class _homeScreen extends State<homeScreen>{
       navBarStyle: NavBarStyle.simple,
     );
   }
-
-
 }
