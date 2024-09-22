@@ -32,7 +32,7 @@ class _homeScreen extends State<homeScreen> {
           togeteNavbar();
         },
       ),
-      cartScreen(),
+      CartScreen(),
       const Center(child: Text("Profile")),
     ];
   }
@@ -105,3 +105,10 @@ class _homeScreen extends State<homeScreen> {
     );
   }
 }
+/**
+ * 
+
+
+
+  
+ */
