@@ -11,6 +11,7 @@ import 'package:shoppet_fontend/Screen/LoginAndRegister.dart';
 import 'package:shoppet_fontend/Screen/SlashSceen.dart';
 import 'package:shoppet_fontend/Screen/cartScreen.dart';
 import 'package:shoppet_fontend/Screen/homeScreen.dart';
+import 'package:shoppet_fontend/Screen/test.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

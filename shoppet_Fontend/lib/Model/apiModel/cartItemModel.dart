@@ -3,9 +3,9 @@ class cartItems {
   final String cartID;
   final String product_ID;
   final String name;
-  final String price;
+  final int price;
   final String imagePath; // Thêm trường name
-  final String quantity;
+  final int quantity;
 
   cartItems({
     required this.cartItemID,
@@ -24,9 +24,9 @@ class cartItems {
       cartID: json['cartID'] as String,
       product_ID: json['product_ID'] as String,
       name: json['name'] as String,
-      price: json['price'] as String,
+      price: json['price'] as int,
       imagePath: json['imagePath'] as String,
-      quantity: json['quantity'] as String,
+      quantity: json['quantity'] as int,
     );
   }
 }
