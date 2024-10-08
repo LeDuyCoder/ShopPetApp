@@ -1,15 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
+import 'package:shoppet_fontend/Screen/adminScreen.dart';
 import 'package:shoppet_fontend/Screen/categoryScreen.dart';
 import 'package:shoppet_fontend/Screen/mainScreen.dart';
+import 'package:shoppet_fontend/Screen/orderScreen.dart';
+import 'package:shoppet_fontend/Screen/profileScreen.dart';
 import 'package:shoppet_fontend/Screen/searchScreen.dart';
 import 'package:shoppet_fontend/Screen/showSearchScreen.dart';
 
+import '../Model/apiModel/userModel.dart';
 import 'cartScreen.dart';
 import 'detailScreen.dart';
 
 class homeScreen extends StatefulWidget{
+
+  final User? user;
+
+  const homeScreen({super.key, this.user});
+
   @override
   State<StatefulWidget> createState() => _homeScreen();
 
@@ -32,7 +41,10 @@ class _homeScreen extends State<homeScreen>{
         togeteNavbar();
       },),
       cartScreen(),
-      const Center(child: Text("Profile")),
+      orderScreen(),
+      if(widget.user != null && widget.user!.role == "ADMIN")
+        adminScreen(togeterNAV: togeteNavbar,),
+      profileScreen(together_Nav: togeteNavbar, contextHomeScreen: context,),
     ];
   }
 
@@ -50,6 +62,21 @@ class _homeScreen extends State<homeScreen>{
         activeColorPrimary: const Color.fromRGBO(237, 177, 107, 1.0),
         inactiveColorPrimary: Colors.grey,
       ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(Icons.payments_outlined),
+        title: "Orders",
+        activeColorPrimary: const Color.fromRGBO(237, 177, 107, 1.0),
+        inactiveColorPrimary: Colors.grey,
+      ),
+
+      if(widget.user != null && widget.user!.role == "ADMIN")
+        PersistentBottomNavBarItem(
+          icon: const Icon(Icons.area_chart_outlined),
+          title: "Admin",
+          activeColorPrimary: const Color.fromRGBO(237, 177, 107, 1.0),
+          inactiveColorPrimary: Colors.grey,
+        ),
+
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.person),
         title: "Profile",

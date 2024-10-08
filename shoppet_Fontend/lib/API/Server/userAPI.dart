@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:shoppet_fontend/API/Local/config.dart';
 
 import '../../Model/apiModel/userModel.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 
 class userAPI {
@@ -178,26 +181,36 @@ class userAPI {
   /// ```
   ///
   /// URL API sử dụng là `$apiUrl/api/updateUser`, trong đó `$apiUrl` là URL cơ sở của API.
-  Future<String> updateUser(String user_id, {String name = "none", String mail = "none", int phone = 0, String address = "none", String password = "none"}) async {
+  Future<String> updateUser(String user_id, {String name = "none", String mail = "none", int phone = 0, String address = "none", String password = "none", File? image}) async {
     try {
-      // Tạo danh sách các tham số cần truyền
-      Map<String, String> queryParams = {};
+      var request = http.MultipartRequest('PUT', Uri.parse('$apiUrl/api/updateUser'));
 
-      // Kiểm tra và chỉ thêm những tham số không có giá trị "none"
-      if (name != "none") queryParams['name'] = name;
-      if (mail != "none") queryParams['mail'] = mail;
-      if (phone != 0) queryParams['phone'] = phone.toString();
-      if (address != "none") queryParams['address'] = address;
-      if (password != "none") queryParams['password'] = password;
+      // Thêm các field vào request
+      request.fields['user_id'] = user_id;
+      if (name != "none") request.fields['name'] = name;
+      if (mail != "none") request.fields['mail'] = mail;
+      if (phone != 0) request.fields['phone'] = phone.toString();
+      if (address != "none") request.fields['address'] = address;
+      if (password != "none") request.fields['password'] = password;
 
-      // Xây dựng URL với các query parameters
-      Uri uri = Uri.parse('$apiUrl/api/updateUser').replace(queryParameters: {
-        'user_id': user_id,
-        ...queryParams,
-      });
+      // Nếu có file ảnh, thêm vào multipart request
+      if (image != null) {
+        var stream = http.ByteStream(image.openRead());
+        var length = await image.length(); // Lấy độ dài của file
 
-      // Gọi HTTP PUT
-      final response = await http.put(uri);
+        // Tạo đối tượng MultipartFile và thêm vào request
+        var multipartFile = http.MultipartFile(
+          'image', // Tên field cho file ảnh
+          stream,
+          length,
+          filename: "avatar", // Lấy tên file
+        );
+
+        request.files.add(multipartFile); // Thêm file vào request
+      }
+
+      // Gửi request
+      var response = await request.send();
 
       // Xử lý phản hồi
       if (response.statusCode == 200) {
@@ -205,12 +218,16 @@ class userAPI {
       } else if (response.statusCode == 404) {
         return "user not found";
       } else {
+        print('Response status: ${response.statusCode}');
+        print('Response body: ${await response.stream.bytesToString()}');
         return response.statusCode.toString();
       }
-    }catch(e){
-      throw Exception(config.ERROR_SERVER);
+    } catch (e) {
+      print('Exception: $e');
+      throw Exception('Server error');
     }
   }
+
 
   /// Tạo một tài khoản người dùng mới.
   ///

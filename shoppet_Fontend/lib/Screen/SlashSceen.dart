@@ -1,11 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shoppet_fontend/API/Server/visitAPI.dart';
 import 'package:shoppet_fontend/Screen/LoginAndRegister.dart';
 import 'package:shoppet_fontend/Screen/homeScreen.dart';
+
+import '../Model/apiModel/userModel.dart';
 
 class Slashsceen extends StatefulWidget {
   const Slashsceen({super.key});
@@ -84,22 +88,32 @@ class _SlashsceenState extends State<Slashsceen> with SingleTickerProviderStateM
 
     // Sử dụng Future.delayed để chờ 3 giây và chuyển sang màn hình Login_Register
     Future.delayed(const Duration(seconds: 10), () async {
+      User? user;
+      SharedPreferences storeData = await SharedPreferences.getInstance();
+      if(storeData.containsKey("dataUser")){
+        user = User.fromJson(jsonDecode(storeData.getString("dataUser")!));
+      }else{
+        user = null;
+      }
+      
       Timer? _timer = Timer.periodic(const Duration(seconds: 2), (timer) async {
         if (checkInternet) {
           SharedPreferences storeData = await SharedPreferences.getInstance();
+          visitAPI visitService = visitAPI();
 
           // Kiểm tra widget có còn mounted không trước khi chuyển trang
           if (!mounted) return;
 
           if (storeData.containsKey("dataUser")) {
+            await visitService.addVisit(user!.userId);
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => homeScreen()),
+              MaterialPageRoute(builder: (context) => homeScreen(user: user)),
             );
           } else {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const Login_Register()),
+              MaterialPageRoute(builder: (context) => Login_Register()),
             );
           }
         }

@@ -4,6 +4,7 @@ import 'package:shoppet_fontend/Screen/LoginScreen.dart';
 import 'RegisterScreen.dart';
 
 class Login_Register extends StatelessWidget {
+
   const Login_Register({super.key});
 
   @override

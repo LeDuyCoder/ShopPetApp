@@ -67,22 +67,35 @@ class _screenMain extends State<screenMain>{
   void initState() {
     super.initState();
 
+    // Khởi tạo PageController với trang ban đầu là 0
     _pageController = PageController(initialPage: 0);
 
-    // Thiết lập Timer để tự động cuộn sau mỗi 2 giây
-    _timer = Timer.periodic(Duration(seconds: 5), (Timer timer) {
-      if (_currentPage < 2) {
-        _currentPage++;
-      } else {
-        _currentPage = 0;
-      }
+    // Sử dụng addPostFrameCallback để đảm bảo PageView đã gắn hoàn toàn trước khi cuộn
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Thiết lập Timer để tự động cuộn sau mỗi 5 giây
+      _timer = Timer.periodic(Duration(seconds: 5), (Timer timer) {
+        if (_currentPage < 2) {
+          _currentPage++;
+        } else {
+          _currentPage = 0;
+        }
 
-      _pageController.animateToPage(
-        _currentPage,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeIn,
-      );
+        // Sử dụng PageController để cuộn trang
+        _pageController.animateToPage(
+          _currentPage,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
+      });
     });
+  }
+
+  @override
+  void dispose() {
+    // Huỷ Timer và PageController khi không còn sử dụng
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
   }
 
   String formatCurrency(double amount) {
