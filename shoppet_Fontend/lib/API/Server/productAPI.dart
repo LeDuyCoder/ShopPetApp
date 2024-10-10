@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:shoppet_fontend/Model/apiModel/productModel.dart';
 
@@ -208,12 +209,38 @@ class productAPI{
     required double price,
     required int stock_quantity,
     required String category_id,
-    String image="none",
+    File? image, // Sửa kiểu dữ liệu của image thành File?
   }) async {
     try {
-      final response = await http.post(Uri.parse(
-          '$apiUrl/api/createProduct?name=$name&description=$description&price=$price&stock_quantity=$stock_quantity&category_id=$category_id&image=$image'));
+      var request = http.MultipartRequest('POST', Uri.parse('$apiUrl/api/createProduct'));
 
+      // Thêm các field vào request
+      request.fields['name'] = name;
+      request.fields['description'] = description;
+      request.fields['price'] = price.toString();
+      request.fields['stock_quantity'] = stock_quantity.toString();
+      request.fields['category_id'] = category_id;
+
+      // Nếu có file ảnh, thêm vào multipart request
+      if (image != null) {
+        var stream = http.ByteStream(image.openRead());
+        var length = await image.length(); // Lấy độ dài của file
+
+        // Tạo đối tượng MultipartFile và thêm vào request
+        var multipartFile = http.MultipartFile(
+          'image', // Tên field cho file ảnh
+          stream,
+          length,
+          filename: "product_image", // Tên file (tùy chỉnh)
+        );
+
+        request.files.add(multipartFile); // Thêm file vào request
+      }
+
+      // Gửi request
+      var response = await request.send();
+
+      // Xử lý phản hồi
       if (response.statusCode == 201) {
         return HTTPReult.created;
       } else if (response.statusCode == 409) {
@@ -222,10 +249,11 @@ class productAPI{
         print(response.statusCode);
         return HTTPReult.error;
       }
-    }catch(e){
+    } catch (e) {
       throw Exception(config.ERROR_SERVER);
     }
   }
+
 
   /// Cập nhật thông tin sản phẩm dựa trên các tham số đầu vào.
   ///
