@@ -8,6 +8,7 @@ class User {
   final String createdAt; // Thay đổi thành createdAt để khớp với create_at
   final String role;
   final String image;
+  final String address;
 
   User({
     required this.userId,
@@ -18,7 +19,8 @@ class User {
     required this.phone,
     required this.createdAt,
     required this.role,
-    required this.image
+    required this.image,
+    required this.address
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class User {
       createdAt: json['create_at'] as String, // Đổi thành create_at để khớp với JSON
       role: json['role'] as String,
       image: json['image'] == null ? "" : json['image'] as String,
+      address: json["address"] as String
     );
   }
 
@@ -46,7 +49,8 @@ class User {
       'phone': phone,
       'create_at': createdAt, // Đổi lại thành create_at để khớp với định dạng JSON
       'role': role,
-      'image': image
+      'image': image,
+      'address': address
     };
   }
 }

@@ -6,11 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shoppet_fontend/API/Local/config.dart';
 import 'package:shoppet_fontend/API/Server/userAPI.dart';
+import 'package:shoppet_fontend/API/Server/visitAPI.dart';
 import 'package:shoppet_fontend/Screen/homeScreen.dart';
 
 import '../Model/apiModel/userModel.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   State<StatefulWidget> createState() => _LoginScreen();
 }
@@ -31,10 +34,12 @@ class _LoginScreen extends State<LoginScreen> {
       userAPI userService = userAPI();
       HTTPReult checkPass = await userService.checkpass(username: _username.text, password: _password.text);
       User? dataUser = await userService.getUserByName(_username.text);
+      visitAPI visitService = visitAPI();
+      await visitService.addVisit(dataUser!.userId);
       setState(() {
         if (checkPass == HTTPReult.ok) {
           storeData.setString("dataUser", jsonEncode(dataUser?.toJson()));
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => homeScreen()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => homeScreen(user: dataUser,)));
         } else {
           _passwordError = "mật khẩu không đúng";
         }
