@@ -3,15 +3,19 @@ import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:shoppet_fontend/API/Server/rateAPI.dart';
 import 'package:shoppet_fontend/API/Server/userAPI.dart';
+import 'package:shoppet_fontend/Model/apiModel/cartItemModel.dart';
 import 'package:shoppet_fontend/Model/apiModel/productModel.dart';
 import 'package:shoppet_fontend/Widget/expandText.dart';
+import 'package:uuid/v4.dart';
 
 import '../Model/apiModel/rateModel.dart';
 import '../Model/apiModel/userModel.dart';
 import '../Widget/startDisplay.dart';
+import 'SlashSceen.dart';
 
 class detailScreen extends StatefulWidget{
 
@@ -58,7 +62,6 @@ class _detailScreen extends State<detailScreen>{
       }
       return map;
     });
-    print(commentsMap);
     return commentsMap;
   }
 
@@ -175,7 +178,26 @@ class _detailScreen extends State<detailScreen>{
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
-                        onTap: () async {},
+                        onTap: () {
+                          UuidV4 uuid = UuidV4();
+                          setState(() {
+                            cartItems item = cartItems(
+                              cartItemID: uuid.generate(),
+                              cartID: Slashsceen.CartID,
+                              product_ID: widget.product.product_id,
+                              amount: 1,
+                            );
+
+                            if(Slashsceen.cartItemsUser[0].any((item){
+                              return item.product_ID == widget.product.product_id;
+                            })){
+                              _showToastError("Vật phẩm đã nằm trong giỏ hàng");
+                            }else {
+                              Slashsceen.cartItemsUser[0].add(item);
+                              _showToast("Đã Thêm Sản Phẩm Vào Giỏ Hàng");
+                            }
+                          });
+                        },
                         child: Container(
                           width: MediaQuery.sizeOf(context).width - MediaQuery.sizeOf(context).width*0.5 - 25,
                           height: 40,
@@ -186,20 +208,33 @@ class _detailScreen extends State<detailScreen>{
                             ), // Màu nền của Container
                             borderRadius: BorderRadius.circular(5.0), // Bo tròn góc
                           ),
-                          child: const Center(
-                            child: Row(
+                          child: Center(
+                            child: (Slashsceen.cartItemsUser[0].any((item){
+                                return item.product_ID == widget.product.product_id;
+                            })) ? const Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.shopping_bag_outlined),
+                                Icon(Icons.shopping_bag_outlined, color: Colors.red,),
                                 SizedBox(width: 5,),
                                 Text(
-                                  'ADD TO CART',
-                                  style: TextStyle(color: Color.fromRGBO(90, 53, 11, 1.0), fontSize: 12),
-                                ),
+                                  'CART IN',
+                                  style: TextStyle(color: Colors.red, fontSize: 12),
+                                )
                               ],
+                            ) :
+                            const Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                Icon(Icons.shopping_bag_outlined),
+                            SizedBox(width: 5,),
+                            Text(
+                              'ADD TO CART',
+                              style: TextStyle(color: Color.fromRGBO(90, 53, 11, 1.0), fontSize: 12),
                             )
-                          ),
+                          ],
+                        )),
                         ),
                       ),
                       const SizedBox(width: 10,),
@@ -304,5 +339,30 @@ class _detailScreen extends State<detailScreen>{
       ],
     );
   }
+
+  void _showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.greenAccent,
+      textColor: Colors.green,
+      fontSize: 16.0,
+    );
+  }
+
+  void _showToastError(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.redAccent,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
+
 
 }

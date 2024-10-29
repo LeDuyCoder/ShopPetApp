@@ -38,8 +38,6 @@ class productAPI{
           jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         }
 
-        print(jsonResponse);
-
         List<Product> products = [];
         jsonResponse.forEach((product) {
           Product product_output = Product.fromJson(
@@ -117,6 +115,50 @@ class productAPI{
       throw Exception(config.ERROR_SERVER);
     }
   }
+
+  /// Lấy danh sách sản phẩm từ API dựa trên danh sách ID sản phẩm.
+  ///
+  /// **Tham số:**
+  /// - `productIds`: Danh sách ID của các sản phẩm cần truy vấn.
+  ///
+  /// **Trả về:**
+  /// - Một danh sách `Product` nếu thành công hoặc `null` nếu không có sản phẩm nào.
+  ///
+  /// **Lưu ý:**
+  /// - Hàm này yêu cầu tham số là một danh sách `ID`.
+  Future<List<Product>?> getProductsByIds(List<String> productIds) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$apiUrl/api/getProductsByIds'),
+        headers: {"Content-Type": "application/json"},
+        body: json.encode(productIds), // Chuyển danh sách ID thành JSON để gửi lên API
+      );
+
+      if (response.statusCode == 204) {
+        return null; // Trả về null nếu không có sản phẩm nào
+      } else if (response.statusCode == 200) {
+        List<dynamic> jsonResponse;
+
+        if (response.headers['content-type']?.contains('charset=utf-8') ?? false) {
+          jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+        } else {
+          jsonResponse = json.decode(response.body);
+        }
+
+        // Chuyển đổi JSON thành danh sách sản phẩm
+        List<Product> products = jsonResponse
+            .map((product) => Product.fromJson(product as Map<String, dynamic>))
+            .toList();
+
+        return products; // Trả về danh sách sản phẩm
+      } else {
+        throw Exception("Failed to load products"); // Trả về lỗi nếu không thành công
+      }
+    } catch (e) {
+      throw Exception(config.ERROR_SERVER); // Xử lý lỗi kết nối server
+    }
+  }
+
 
   /// Lấy sản phẩm dựa trên [name].
   ///
@@ -246,7 +288,6 @@ class productAPI{
       } else if (response.statusCode == 409) {
         return HTTPReult.conflict;
       } else {
-        print(response.statusCode);
         return HTTPReult.error;
       }
     } catch (e) {

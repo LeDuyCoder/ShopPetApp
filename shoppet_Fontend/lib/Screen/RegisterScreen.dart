@@ -45,7 +45,6 @@ class _RegisterscreenState extends State<Registerscreen> {
           _userError = "Account exist";
         }else{
           List<User>? listUsers = await userService.getUserByMail(_mail.text);
-          print(listUsers?.length);
           if(listUsers != null && listUsers.length < 2){
             final random = Random();
             int randomNumber = 100000 + random.nextInt(900000);
@@ -100,37 +99,6 @@ class _RegisterscreenState extends State<Registerscreen> {
       print('Email not sent. ${e.toString()}');
     }
   }
-
-  // Future<void> dialogOTP(){
-  //   return Dialogs.materialDialog(
-  //       title: "Vertiy Mail",
-  //       customView: Container(
-  //         child: Column(
-  //           children: [
-  //
-  //           ],
-  //         ),
-  //       ),
-  //       color: Colors.white,
-  //       context: context,
-  //       actions: [
-  //         IconsOutlineButton(
-  //           onPressed: () {},
-  //           text: 'Cancel',
-  //           iconData: Icons.cancel_outlined,
-  //           textStyle: TextStyle(color: Colors.grey),
-  //           iconColor: Colors.grey,
-  //         ),
-  //         IconsButton(
-  //           onPressed: () {},
-  //           text: 'Delete',
-  //           iconData: Icons.delete,
-  //           color: Colors.red,
-  //           textStyle: TextStyle(color: Colors.white),
-  //           iconColor: Colors.white,
-  //         ),
-  //       ]);
-  // }
 
 
   @override

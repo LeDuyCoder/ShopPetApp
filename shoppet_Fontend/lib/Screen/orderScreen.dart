@@ -242,7 +242,7 @@ class _orderScreen extends State<orderScreen>{
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text("Status", style: TextStyle(fontFamily: "Mina", fontSize: 13),),
-                          dataOrder["status"] == "paid" ? statusOrder.statusPayed() : dataOrder["status"] == "fail" ? statusOrder.statusFail() : statusOrder.statusCashed()
+                          dataOrder["status"] == "paid" ? statusOrder.statusPayed() : dataOrder["status"] == "fail" ? statusOrder.statusFail() : dataOrder["status"] == "Pending" ? statusOrder.statusPending() : statusOrder.statusCashed()
                         ],
                       ),
                       Row(

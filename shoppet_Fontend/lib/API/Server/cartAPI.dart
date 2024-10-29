@@ -123,7 +123,6 @@ class cartAPI{
     }else if(response.statusCode == 409){
       return HTTPReult.nofound;
     }else{
-      print(response.statusCode);
       return HTTPReult.error;
     }
   }
