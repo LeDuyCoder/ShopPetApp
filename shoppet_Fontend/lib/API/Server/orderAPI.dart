@@ -109,16 +109,28 @@ class orderAPI {
   /// ```dart
   /// final result = await orderAPI.createOrder(userID: '456');
   /// ```
-  Future<HTTPReult> createOrder({required String userID}) async {
-    final response = await http.post(Uri.parse('$apiUrl/api/createOrder?user_id=$userID'));
+  Future<String> createOrder({
+    required String userID,
+    String? voucherID, // Tham số tùy chọn cho voucher_id
+  }) async {
+    // Xây dựng URL với các tham số thích hợp
+    final uri = Uri.parse(
+      '$apiUrl/api/createOrder?user_id=$userID${voucherID != null ? '&voucher_id=$voucherID' : ''}',
+    );
+
+    // Gửi yêu cầu POST
+    final response = await http.post(uri);
 
     if (response.statusCode == 201) {
-      return HTTPReult.ok;
+      // Trả về UUID từ phản hồi nếu thành công
+      return response.body; // Giả định rằng phản hồi là UUID
     } else {
-      print(response.statusCode);
-      return HTTPReult.error;
+      // Trả về một thông điệp lỗi hoặc giá trị mặc định nếu thất bại
+      return 'Error: ${response.statusCode}';
     }
   }
+
+
 
   /// Cập nhật trạng thái của một đơn hàng.
   ///
@@ -142,7 +154,6 @@ class orderAPI {
     } else if (response.statusCode == 404) {
       return HTTPReult.nofound;
     } else {
-      print(response.statusCode);
       return HTTPReult.error;
     }
   }

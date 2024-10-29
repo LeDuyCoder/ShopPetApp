@@ -1,14 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
-import 'package:shoppet_fontend/Screen/adminScreen.dart';
+import 'package:shoppet_fontend/Model/apiModel/cartItemModel.dart';
+import 'package:shoppet_fontend/Model/apiModel/cartItemModel.dart';
 import 'package:shoppet_fontend/Screen/categoryScreen.dart';
 import 'package:shoppet_fontend/Screen/mainScreen.dart';
 import 'package:shoppet_fontend/Screen/orderScreen.dart';
 import 'package:shoppet_fontend/Screen/profileScreen.dart';
 import 'package:shoppet_fontend/Screen/searchScreen.dart';
 import 'package:shoppet_fontend/Screen/showSearchScreen.dart';
+import 'package:shoppet_fontend/Screen/adminScreen.dart';
 
+import '../Model/apiModel/cartItemModel.dart';
+import '../Model/apiModel/cartItemModel.dart';
 import '../Model/apiModel/userModel.dart';
 import 'cartScreen.dart';
 import 'detailScreen.dart';
@@ -40,7 +44,9 @@ class _homeScreen extends State<homeScreen>{
       screenMain(togetherNavBar: (){
         togeteNavbar();
       },),
-      cartScreen(),
+      CartScreen(togetherNav: (){
+        togeteNavbar();
+      },),
       orderScreen(),
       if(widget.user != null && widget.user!.role == "ADMIN")
         adminScreen(togeterNAV: togeteNavbar,),
@@ -57,7 +63,10 @@ class _homeScreen extends State<homeScreen>{
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.shopping_cart_rounded, size: 25,),
+        icon: const Icon(
+          Icons.shopping_cart_rounded,
+          size: 25,
+        ),
         title: "Cart",
         activeColorPrimary: const Color.fromRGBO(237, 177, 107, 1.0),
         inactiveColorPrimary: Colors.grey,

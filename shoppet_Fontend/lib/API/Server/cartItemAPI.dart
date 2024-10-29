@@ -30,7 +30,7 @@ class cartItemAPI{
 
       return listCartItems;
     }else{
-      return null;
+      return [];
     }
   }
 
@@ -51,7 +51,6 @@ class cartItemAPI{
     final response = await http.get(Uri.parse('$apiUrl/api/getCartItems?cartID=$cartID'));
 
     if(response.statusCode == 200){
-
       List<dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       List<cartItems> listCartItems = [];
       jsonResponse.forEach((item){
@@ -60,7 +59,7 @@ class cartItemAPI{
 
       return listCartItems;
     }else{
-      return null;
+      return [];
     }
   }
 

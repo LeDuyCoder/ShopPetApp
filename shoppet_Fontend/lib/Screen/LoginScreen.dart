@@ -9,7 +9,11 @@ import 'package:shoppet_fontend/API/Server/userAPI.dart';
 import 'package:shoppet_fontend/API/Server/visitAPI.dart';
 import 'package:shoppet_fontend/Screen/homeScreen.dart';
 
+import '../API/Server/cartAPI.dart';
+import '../API/Server/cartItemAPI.dart';
+import '../Model/apiModel/cartModel.dart';
 import '../Model/apiModel/userModel.dart';
+import 'SlashSceen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -36,9 +40,18 @@ class _LoginScreen extends State<LoginScreen> {
       User? dataUser = await userService.getUserByName(_username.text);
       visitAPI visitService = visitAPI();
       await visitService.addVisit(dataUser!.userId);
+      if(checkPass == HTTPReult.ok){
+        cartAPI cartService = cartAPI();
+        cartItemAPI cartItemService = cartItemAPI();
+        List<Cart>? cartData = await cartService.getCartsbyUserID(userID: dataUser.userId);
+        Slashsceen.cartItemsUser[0] = (await cartItemService.getCartItemsbyCartID(cartID: cartData![0].cart_id))!;
+        Slashsceen.CartID = cartData[0].cart_id;
+      }
+
       setState(() {
         if (checkPass == HTTPReult.ok) {
-          storeData.setString("dataUser", jsonEncode(dataUser?.toJson()));
+          storeData.setString("dataUser", jsonEncode(dataUser.toJson()));
+
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => homeScreen(user: dataUser,)));
         } else {
           _passwordError = "mật khẩu không đúng";

@@ -139,24 +139,24 @@ class _adminScreen extends State<adminScreen>{
           ),
           child: SafeArea(
             child: Align(
-              alignment: Alignment.centerLeft,
-              child: Row(
-                children: [
-                  IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_back, color: Color.fromRGBO(232, 124, 0, 1.0))),
-                  SizedBox(width: 10,),
-                  const Text(
-                    "Dashboard",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontFamily: "Itim"
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  children: [
+                    IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_back, color: Color.fromRGBO(232, 124, 0, 1.0))),
+                    SizedBox(width: 10,),
+                    const Text(
+                      "Dashboard",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontFamily: "Itim"
+                      ),
                     ),
-                  ),
-              ],
-            )
+                  ],
+                )
+            ),
           ),
-        ),
-      ),),
+        ),),
 
       body: Container(
         child: SingleChildScrollView(
@@ -375,37 +375,59 @@ class _adminScreen extends State<adminScreen>{
               SizedBox(height: 20,),
               Center(
                 child: Container(
-                  height: 350,
-                  width: MediaQuery.sizeOf(context).width,
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey,
-                            offset: Offset(0, 3),
-                            blurRadius: 5,
-                            spreadRadius: 1
-                        )
-                      ]
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Summary", style: TextStyle(fontFamily: "Itim", fontSize: 30),),
-                        SizedBox(height: 20,),
-                        FutureBuilder(future: getDataNumbers(), builder: (context, data){
-                          if(data.hasData){
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
+                    height: 350,
+                    width: MediaQuery.sizeOf(context).width,
+                    decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(0, 3),
+                              blurRadius: 5,
+                              spreadRadius: 1
+                          )
+                        ]
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Summary", style: TextStyle(fontFamily: "Itim", fontSize: 30),),
+                          SizedBox(height: 20,),
+                          FutureBuilder(future: getDataNumbers(), builder: (context, data){
+                            if(data.hasData){
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                      height: 200,
+                                      width: 180,
+                                      decoration: const BoxDecoration(
+                                        color: Color.fromRGBO(247, 115, 1, 1.0),
+                                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(20),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Text("stock \nquantity", style: TextStyle(color: Colors.white,  fontFamily: "Itim", fontSize: 20), ),
+                                            const SizedBox(height: 10,),
+                                            Text("${data.data![0]} \nItems", style: TextStyle(color: Colors.white, fontFamily: "Itim", fontSize:30), )
+                                          ],
+                                        ),
+                                      )
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Container(
                                     height: 200,
                                     width: 180,
                                     decoration: const BoxDecoration(
-                                      color: Color.fromRGBO(247, 115, 1, 1.0),
+                                      color: Color.fromRGBO(255, 247, 138, 1.0),
                                       borderRadius: BorderRadius.all(Radius.circular(20)),
                                     ),
                                     child: Padding(
@@ -413,46 +435,24 @@ class _adminScreen extends State<adminScreen>{
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          const Text("stock \nquantity", style: TextStyle(color: Colors.white,  fontFamily: "Itim", fontSize: 20), ),
-                                          const SizedBox(height: 10,),
-                                          Text("${data.data![0]} \nItems", style: TextStyle(color: Colors.white, fontFamily: "Itim", fontSize:30), )
+                                          const Text("User \nAccess", style: TextStyle(color: Colors.black, fontFamily: "Itim", fontSize: 20), ),
+                                          SizedBox(height: 10,),
+                                          Text("${formatNumber(data.data![1])} \nVisitor", style: TextStyle(color: Colors.black, fontFamily: "Itim", fontSize:30), )
                                         ],
                                       ),
-                                    )
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Container(
-                                  height: 200,
-                                  width: 180,
-                                  decoration: const BoxDecoration(
-                                    color: Color.fromRGBO(255, 247, 138, 1.0),
-                                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const Text("User \nAccess", style: TextStyle(color: Colors.black, fontFamily: "Itim", fontSize: 20), ),
-                                        SizedBox(height: 10,),
-                                        Text("${formatNumber(data.data![1])} \nVisitor", style: TextStyle(color: Colors.black, fontFamily: "Itim", fontSize:30), )
-                                      ],
                                     ),
-                                  ),
-                                )
-                              ],
-                            );
-                          }else{
-                            return Center(
-                              child: Text("No Data"),
-                            );
-                          }
-                        })
-                      ],
-                    ),
-                  )
+                                  )
+                                ],
+                              );
+                            }else{
+                              return Center(
+                                child: Text("No Data"),
+                              );
+                            }
+                          })
+                        ],
+                      ),
+                    )
                 ),
               ),
               SizedBox(
@@ -501,5 +501,4 @@ class _adminScreen extends State<adminScreen>{
       ),
     );
   }
-
 }

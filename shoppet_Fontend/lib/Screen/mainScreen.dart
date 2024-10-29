@@ -58,8 +58,6 @@ class _screenMain extends State<screenMain>{
     List<Product>? listProduct = await productService.getProducts();
     ListRate = await rateServiece.getRates();
 
-    print(listProduct);
-
     return listProduct ?? <Product>[];
   }
 

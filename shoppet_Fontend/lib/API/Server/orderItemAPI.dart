@@ -118,30 +118,6 @@ class orderItemAPI{
   /// ```
   ///
   /// Kết quả trả về [HTTPReult.ok] nếu tạo thành công, [HTTPReult.error] nếu tạo thất bại.
-  ///
-  /// ```dart
-  /// Future<HTTPReult> createOrderWithItems(List<Map<String, dynamic>> orderItems) async {
-  ///   try {
-  ///     String body = json.encode(orderItems);
-  ///     final response = await http.post(
-  ///       Uri.parse('$apiUrl/api/addItems'),
-  ///       headers: {
-  ///         'Content-Type': 'application/json',
-  ///       },
-  ///       body: body,
-  ///     );
-  ///
-  ///     if(response.statusCode == 201){
-  ///       return HTTPReult.ok;
-  ///     }else{
-  ///       print(response.statusCode);
-  ///       return HTTPReult.error;
-  ///     }
-  ///   }catch(e){
-  ///     throw Exception(config.ERROR_SERVER);
-  ///   }
-  /// }
-  /// ```
   Future<HTTPReult> createOrderWithItems(List<Map<String, dynamic>> orderItems) async {
     try {
       // Tạo một map để lưu các sản phẩm đã gộp
@@ -179,7 +155,6 @@ class orderItemAPI{
       if(response.statusCode == 201){
         return HTTPReult.ok;
       } else {
-        print(response.statusCode);
         return HTTPReult.error;
       }
 

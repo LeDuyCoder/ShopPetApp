@@ -107,34 +107,51 @@ class voucherAPI{
   /// - `Exception` với thông báo lỗi nếu có sự cố khi kết nối với máy chủ.
   Future<List<voucher>?> getVoucherbyDate({
     required String startDate,
-    required String endDate,
+    String? endDate,
   }) async {
     String formattedStartDate = _formatDate(startDate);
-    String formattedEndDate = _formatDate(endDate);
+    String? formattedEndDate = endDate != null && endDate != "none"
+        ? _formatDate(endDate)
+        : null;
 
-    // Gửi request với query parameters
-    final response = await http.get(
-        Uri.parse('$apiUrl/api/getVouchers?startDate=$formattedStartDate&endDate=$formattedEndDate')
-    );
+    // Build query parameters
+    String url = '$apiUrl/api/getVouchers?startDate=$formattedStartDate';
+    if (formattedEndDate != null) {
+      url += '&endDate=$formattedEndDate';
+    }
+
+    // Send request with query parameters
+    final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       List<dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
-      List<voucher> vouchers = [];
-
-      jsonResponse.forEach((item) {
-        vouchers.add(voucher.fromJson(item));
-      });
-
+      List<voucher> vouchers = jsonResponse.map((item) => voucher.fromJson(item)).toList();
       return vouchers;
     } else {
       return null;
     }
   }
 
+
   String _formatDate(String date) {
-    // Giả định định dạng input là dd/MM/yyyy
-    List<String> parts = date.split('/');
-    return '${parts[2]}/${int.parse(parts[1])}/${int.parse(parts[0])}';
+    try {
+      List<String> parts = date.split('-');
+
+      if (parts.length != 3) {
+        throw FormatException('Invalid date format: $date');
+      }
+
+      String year = parts[0];
+      String month = parts[1].padLeft(2, '0');
+      String day = parts[2].padLeft(2, '0');
+
+      print('$year-$month-$day'.split(" ")[0]);
+
+      return '$year-$month-$day'.split(" ")[0];
+    } catch (e) {
+      print('Error formatting date: $e');
+      return ''; // Trả về chuỗi rỗng nếu có lỗi
+    }
   }
 
   /// Tạo một voucher mới.

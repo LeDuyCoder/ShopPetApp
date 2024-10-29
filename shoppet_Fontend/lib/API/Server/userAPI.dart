@@ -20,25 +20,40 @@ class userAPI {
     if (userIds.isEmpty) {
       throw ArgumentError('userIds cannot be empty');
     }
-    // Thay đổi URL theo thực tế
-    final userIdsParam = userIds.join(',');
+
+    // Tạo body JSON từ danh sách UUID
+    final body = jsonEncode(userIds); // Chỉ cần gửi danh sách UUID trực tiếp
 
     try {
-      final response = await http.get(Uri.parse('$apiUrl/api/getUsersByIds?user_ids=$userIdsParam'));
+      // Gửi yêu cầu POST với body chứa danh sách UUID
+      final response = await http.post(
+        Uri.parse('$apiUrl/api/getUsersByIDs'),
+        headers: {
+          'Content-Type': 'application/json', // Đảm bảo header chứa thông tin định dạng JSON
+        },
+        body: body,
+      );
 
       if (response.statusCode == 200) {
+        // Chuyển đổi JSON response thành danh sách các đối tượng User
         List<dynamic> jsonResponse = json.decode(utf8.decode(response.bodyBytes));
         List<User> users = jsonResponse.map((data) => User.fromJson(data)).toList();
         return users;
       } else {
+        // Nếu status code khác 200, in ra lỗi
         print("Failed to load user data: ${response.statusCode}");
+        print(body);
         return null;
       }
     } catch (e) {
+      // Bắt và xử lý lỗi trong quá trình gọi API
       print('Error: $e');
       throw Exception('Failed to load user data');
     }
   }
+
+
+
 
   /// Lấy thông tin người dùng dựa trên [userId].
   ///

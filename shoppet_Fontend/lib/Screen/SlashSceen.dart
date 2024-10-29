@@ -5,13 +5,26 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shoppet_fontend/API/Server/cartAPI.dart';
+import 'package:shoppet_fontend/API/Server/cartItemAPI.dart';
 import 'package:shoppet_fontend/API/Server/visitAPI.dart';
+import 'package:shoppet_fontend/Model/apiModel/cartModel.dart';
 import 'package:shoppet_fontend/Screen/LoginAndRegister.dart';
 import 'package:shoppet_fontend/Screen/homeScreen.dart';
 
+import '../Model/apiModel/cartItemModel.dart';
 import '../Model/apiModel/userModel.dart';
 
 class Slashsceen extends StatefulWidget {
+
+  /*
+  * variable store cartItem
+  * [0]: cartItem in Database
+  * [1]: cartItem add New
+  * */
+  static List<List<cartItems>> cartItemsUser = [[], []];
+  static String CartID = '';
+
   const Slashsceen({super.key});
 
   @override
@@ -51,8 +64,6 @@ class _SlashsceenState extends State<Slashsceen> with SingleTickerProviderStateM
       });
 
       await Future.delayed(const Duration(seconds: 1)); // Giả lập luồng background
-
-      // Gửi tín hiệu về main thread để hiển thị Toast
 
     });
   }
@@ -106,6 +117,12 @@ class _SlashsceenState extends State<Slashsceen> with SingleTickerProviderStateM
 
           if (storeData.containsKey("dataUser")) {
             await visitService.addVisit(user!.userId);
+
+            cartAPI cartService = cartAPI();
+            cartItemAPI cartItemService = cartItemAPI();
+            List<Cart>? cartData = await cartService.getCartsbyUserID(userID: user.userId);
+            Slashsceen.cartItemsUser[0] = (await cartItemService.getCartItemsbyCartID(cartID: cartData![0].cart_id))!;
+            Slashsceen.CartID = cartData![0].cart_id;
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => homeScreen(user: user)),

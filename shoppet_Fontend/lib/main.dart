@@ -11,7 +11,6 @@ import 'package:shoppet_fontend/Model/apiModel/rateModel.dart';
 import 'package:shoppet_fontend/Screen/LoginAndRegister.dart';
 import 'package:shoppet_fontend/Screen/SlashSceen.dart';
 import 'package:shoppet_fontend/Screen/homeScreen.dart';
-import 'package:shoppet_fontend/Screen/orderScreen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +34,7 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  Widget ThreadDevice(){
+  Widget ThreadDevice() {
     if (!kIsWeb) {
       if (Platform.isAndroid) {
         return Slashsceen();

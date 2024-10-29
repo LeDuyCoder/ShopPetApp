@@ -88,7 +88,6 @@ class paymentAPI{
     if(response.statusCode == 201){
       return HTTPReult.ok;
     }else{
-      print(response.statusCode);
       return HTTPReult.error;
     }
   }
