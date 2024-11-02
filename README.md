@@ -68,7 +68,7 @@ We welcome contributions from the community! If you have any ideas or want to re
 
 ## License
 
-This application is released under the MIT License. See LICENSE for more information.
+This application is released under the MIT License. See [LICENSE](LICENSE) for more information.
 
 ## Contact
 
